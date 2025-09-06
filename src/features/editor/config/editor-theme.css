@@ -1,0 +1,191 @@
+.editor-placeholder {
+    color: #999;
+    overflow: hidden;
+    position: absolute;
+    text-overflow: ellipsis;
+    top: 15px;
+    left: 10px;
+    font-size: 15px;
+    user-select: none;
+    display: inline-block;
+    pointer-events: none;
+}
+
+/* Base TextNode style */
+.editor-text-strikethrough {
+    text-decoration: line-through;
+}
+.editor-text-underline {
+    text-decoration: underline;
+}
+.editor-text-italic {
+    font-style: italic;
+}
+.editor-text-bold {
+    font-weight: bold;
+}
+
+.editor-text-underlineStrikethrough {
+    text-decoration: underline line-through;
+}
+
+.editor-text-h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+.editor-text-h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.editor-text-h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+}
+.editor-text-h4 {
+    font-size: 1em;
+    font-weight: bold;
+}
+.editor-text-h5 {
+    font-size: 0.83em;
+    font-weight: bold;
+}
+.editor-text-h6 {
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+/** 
+    List(ordered/unordered) styles
+*/
+
+.editor-list-ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: disc;
+    list-style-position: outside;
+}
+.editor-list-item {
+    margin: 0 32px;
+}
+
+.editor-list-ol {
+    padding: 0;
+    margin: 0;
+    list-style-position: outside;
+}
+
+.editor-list-item::marker{
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.editor-list-ol1 {
+    padding: 0;
+    margin: 0;
+    list-style-type:decimal;
+    list-style-position: outside;
+}
+
+.editor-list-ol2 {
+    padding: 0;
+    margin: 0;
+    list-style-type: upper-alpha;
+    list-style-position: outside;
+}
+.editor-list-ol3 {
+    padding: 0;
+    margin: 0;
+    list-style-type: lower-alpha;
+    list-style-position: outside;
+}
+.editor-list-ol4 {
+    padding: 0;
+    margin: 0;
+    list-style-type: upper-roman;
+    list-style-position: outside;
+}
+.editor-list-ol5 {
+    padding: 0;
+    margin: 0;
+    list-style-type: lower-roman;
+    list-style-position: outside;
+}
+/** 
+check list style 
+*/
+
+
+.editor-checked-list-item-unchecked,.editor-checked-list-item-checked{
+    position: relative;
+    margin-left: 8px;
+    margin-right: 8px;
+    padding-right: 24px;
+    padding-left: 24px;
+    list-style-type: none;
+    outline: none;
+}
+
+.editor-checked-list-item-checked {
+    text-decoration: line-through;
+}
+
+.editor-checked-list-item-unchecked:before,
+.editor-checked-list-item-checked:before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    top: 4px;
+    left: 4px;
+    cursor: pointer;
+    display: block;
+    background-size: cover;
+    position: absolute; 
+}
+
+.editor-checked-list-item-unchecked[dir='rtl']:before,
+.editor-checked-list-item-checked[dir='rtl']:before {
+    left: auto;
+    right: 0;
+}
+
+.editor-checked-list-item-unchecked:focus:before,
+.editor-checked-list-item-checked:focus:before {
+    box-shadow: 0 0 0 2px #a6cdfe;
+    border-radius: 2px;
+}
+
+.editor-checked-list-item-unchecked:before {
+    border: 1px solid #b0b0b0;
+    border-radius: 4px;
+}
+
+.editor-checked-list-item-checked:before {
+    border-radius: 4px;
+    background-color:  #c0c0c0;
+    background-repeat: no-repeat;
+}
+
+.editor-checked-list-item-checked:after {
+    content: '';
+    cursor: pointer;
+    border-color:  #fff;
+    border-style: solid;
+    position: absolute;
+    display: block;
+    top: 6px;
+    width: 5px;
+    left: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    border-width: 0 2px 2px 0;
+}
+
+.editor-checked-list-nested-item{
+    list-style-type: none;
+}
+
+.editor-checked-list-nested-item:before,
+.editor-checked-list-nested-item:after {
+    display: none;
+} 

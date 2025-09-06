@@ -1,10 +1,6 @@
 import SelectionTracker from "./selection-tracker";
-const FloatingToolbar = () => {
-  return (
-    <SelectionTracker allowTracking={true}>
-      <div className="bg-white p-2 rounded shadow">Toolbar</div>
-    </SelectionTracker>
-  );
+const FloatingToolbar = ({ children }: { children: React.ReactNode }) => {
+  return <SelectionTracker allowTracking={true}>{children}</SelectionTracker>;
 };
 
 export default FloatingToolbar;

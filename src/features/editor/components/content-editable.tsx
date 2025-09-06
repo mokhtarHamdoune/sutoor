@@ -1,5 +1,4 @@
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { Textarea } from "@/shared/ui/textarea";
 type Props = {
   className?: string;
   placeholder: string;
@@ -11,9 +10,9 @@ export default function LexicalContentEditable({
 }: Props) {
   return (
     <ContentEditable
-      className={className}
+      className={className ?? "border border-black h-96"}
       aria-placeholder={placeholder}
-      placeholder={<Textarea placeholder={placeholder} />}
+      placeholder={<div>{placeholder}</div>}
     />
   );
 }

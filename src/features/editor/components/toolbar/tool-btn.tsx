@@ -1,9 +1,10 @@
 import React from "react";
-import { Tool } from "../../interfaces/tool";
+import { ToggleTool } from "../../interfaces/tool";
 import { LexicalEditor } from "lexical";
+import { Toggle } from "@/shared/ui/toggle";
 
 const ToolButton: React.FC<{
-  tool: Tool;
+  tool: ToggleTool;
   editor: LexicalEditor;
 }> = ({ tool, editor }) => {
   const [active, setActive] = React.useState(false);
@@ -34,26 +35,16 @@ const ToolButton: React.FC<{
     };
   }, [editor, tool]);
 
-  if (tool.render) {
-    return <>{tool.render({ editor })}</>;
-  }
-
   return (
-    <button
+    <Toggle
       type="button"
       title={tool.label}
       onClick={() => tool.execute(editor)}
       aria-pressed={tool.type === "toggle" ? active : undefined}
-      style={{
-        padding: 6,
-        borderRadius: 4,
-        marginRight: 6,
-        border: active ? "1px solid #333" : "1px solid transparent",
-        background: active ? "#eee" : "transparent",
-      }}
+      className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
     >
       {tool.icon ?? tool.label}
-    </button>
+    </Toggle>
   );
 };
 export default ToolButton;

@@ -1,6 +1,7 @@
 import { LexicalEditor } from "lexical";
 import { Tool } from "../../interfaces/tool";
 import ToolButton from "./tool-btn";
+import ToolToggleGroup from "./toggle-group";
 
 export const Toolbar: React.FC<{
   editor: LexicalEditor;
@@ -21,10 +22,28 @@ export const Toolbar: React.FC<{
       }}
     >
       {tools.map((t) => (
-        <ToolButton key={t.id} tool={t} editor={editor} />
+        <ToolRenderer key={t.id} tool={t} editor={editor} />
       ))}
     </div>
   );
+};
+
+export const ToolRenderer: React.FC<{ editor: LexicalEditor; tool: Tool }> = ({
+  editor,
+  tool,
+}) => {
+  switch (tool.type) {
+    case "toggle":
+      return <ToolButton tool={tool} editor={editor} />;
+    case "toggle-group":
+      return <ToolToggleGroup tool={tool} editor={editor} />;
+    case "dropdown":
+      throw Error("Drop down tool component not implimented yet.");
+    case "custom":
+      return tool.render({ editor });
+    default:
+      return null;
+  }
 };
 
 export default Toolbar;

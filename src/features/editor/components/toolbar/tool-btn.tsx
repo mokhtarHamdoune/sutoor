@@ -14,7 +14,7 @@ const ToolButton: React.FC<{
     const updateState = () => {
       if (tool.isActive) {
         try {
-          setActive(tool.isActive(editor));
+          setActive(tool.isActive);
         } catch {
           setActive(false);
         }

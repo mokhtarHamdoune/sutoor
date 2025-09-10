@@ -12,7 +12,7 @@ export interface BaseTool {
 export interface ToggleTool extends BaseTool {
   type: "toggle";
   /** optional: whether this tool active given the current editor state */
-  isActive?: (editor: LexicalEditor) => boolean;
+  isActive: boolean;
   /** perform action when clicked/activated */
   execute: (editor: LexicalEditor) => void;
 }
@@ -36,7 +36,7 @@ export interface DropdownTool<T extends string | number> extends BaseTool {
   /** perform action when an item is selected */
   execute: (editor: LexicalEditor, value: T) => void;
   /** optional: whether this tool active given the current editor state */
-  isActive?: (editor: LexicalEditor) => boolean;
+  isActive: boolean;
 }
 
 export interface CustomTool extends BaseTool {

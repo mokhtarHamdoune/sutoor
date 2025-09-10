@@ -8,17 +8,24 @@ const ToolToggleGroup = ({
   tool: ToggleGroupTools;
   editor: LexicalEditor;
 }) => {
+  console.log(tool.tools.filter((tl) => tl.isActive).map((tl) => tl.id));
   return (
-    <ToggleGroup variant={"outline"} type="multiple">
-      {tool.tools.map((tl) => (
-        <ToggleGroupItem
-          value={tl.id}
-          key={tl.id}
-          onClick={() => tl.execute(editor)}
-        >
-          {tl.icon}
-        </ToggleGroupItem>
-      ))}
+    <ToggleGroup
+      variant={"outline"}
+      type="multiple"
+      value={tool.tools.filter((tl) => tl.isActive).map((tl) => tl.id)}
+    >
+      {tool.tools.map((tl) => {
+        return (
+          <ToggleGroupItem
+            value={tl.id}
+            key={tl.id}
+            onClick={() => tl.execute(editor)}
+          >
+            {tl.icon}
+          </ToggleGroupItem>
+        );
+      })}
     </ToggleGroup>
   );
 };

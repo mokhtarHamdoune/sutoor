@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FloatingToolbar from "@/features/editor/components/floating-toolbar";
 import Toolbar from "@/features/editor/components/toolbar/toolbar";
 import { ToggleGroupTools, Tool } from "../interfaces/tool";
@@ -7,7 +7,6 @@ import {
   FORMAT_TEXT_COMMAND,
   FORMAT_ELEMENT_COMMAND,
   $getSelection,
-  $isRangeSelection,
   LexicalEditor,
 } from "lexical";
 import {
@@ -20,26 +19,38 @@ import {
   AlignRight,
   AlignJustify,
 } from "lucide-react";
+import {
+  handleSelectionUpdate,
+  type SelectionState,
+  DEFAULT_SELECTION_STATE,
+} from "@/features/editor/components/utils/selection-checkers";
 
 export const FloatingToolbarPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
+  const [selectionState, setSelectionState] = React.useState<SelectionState>(
+    DEFAULT_SELECTION_STATE
+  );
+  // TODO: we need manage the list of tools as state
+  // TODO: we need some kind of architecture and responsibility management for the tools
+  // TODO: we need to add checkers that check for each format
+  // TODO: update the is active with one boolean or maybe string like activeKey: str
 
-  // helper to detect format at current selection
-  const selectionHasFormat = (format: string) => {
-    try {
-      return editor.read(() => {
+  useEffect(() => {
+    const unsubscribe = editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
         const selection = $getSelection();
-        if ($isRangeSelection(selection)) {
-          // RangeSelection has hasFormat in Lexical
-          // @ts-expect-error -- just for test
-          return selection.hasFormat(format);
+        // forward update to the centralized selection handler (placeholder for now)
+        if (selection) {
+          const newState = handleSelectionUpdate(selection);
+          setSelectionState(newState);
+        } else {
+          setSelectionState(DEFAULT_SELECTION_STATE);
         }
-        return false;
       });
-    } catch {
-      return false;
-    }
-  };
+    });
+
+    return () => unsubscribe();
+  }, [editor]);
 
   const alignmentsTool: ToggleGroupTools = {
     id: "alignments",
@@ -54,6 +65,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed) => {
           ed.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
         },
+        isActive: selectionState.alignment === "left",
       },
       {
         id: "center",
@@ -63,6 +75,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed) => {
           ed.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
         },
+        isActive: selectionState.alignment === "center",
       },
       {
         id: "right",
@@ -72,6 +85,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed) => {
           ed.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
         },
+        isActive: selectionState.alignment === "right",
       },
       {
         id: "justify",
@@ -81,6 +95,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed) => {
           ed.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
         },
+        isActive: selectionState.alignment === "justify",
       },
     ],
   };
@@ -99,7 +114,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
           // toggle bold via Lexical FORMAT_TEXT_COMMAND
           ed.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
         },
-        isActive: () => selectionHasFormat("bold"),
+        isActive: selectionState.format.bold,
       },
       {
         id: "italic",
@@ -109,7 +124,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed: LexicalEditor) => {
           ed.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
         },
-        isActive: () => selectionHasFormat("italic"),
+        isActive: selectionState.format.italic,
       },
       {
         id: "underline",
@@ -119,7 +134,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed: LexicalEditor) => {
           ed.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
         },
-        isActive: () => selectionHasFormat("underline"),
+        isActive: selectionState.format.underline,
       },
       {
         id: "strikethrough",
@@ -129,7 +144,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
         execute: (ed: LexicalEditor) => {
           ed.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
         },
-        isActive: () => selectionHasFormat("strikethrough"),
+        isActive: selectionState.format.strikethrough,
       },
     ],
   };

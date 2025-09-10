@@ -9,12 +9,12 @@ type TextFormat = {
 
 type TextAlignment = "left" | "center" | "right" | "justify";
 
-type SelectionState = {
-  format: TextFormat | null;
-  alignment: TextAlignment | null;
+export type SelectionState = {
+  format: TextFormat;
+  alignment: TextAlignment;
 };
 
-const DEFAULT_SELECTION_STATE: SelectionState = {
+export const DEFAULT_SELECTION_STATE: SelectionState = {
   format: {
     bold: false,
     italic: false,
@@ -39,7 +39,7 @@ const getTextAlignment = (selection: RangeSelection): TextAlignment => {
     const firstNode = selectionNodes[0];
     const parent = firstNode.getParent();
     if (parent) {
-      return parent.getFormatType() as TextAlignment;
+      return (parent.getFormatType() as TextAlignment) || "left";
     }
     return "left";
   }

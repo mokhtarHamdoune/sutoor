@@ -8,7 +8,10 @@ import {
   FORMAT_ELEMENT_COMMAND,
   $getSelection,
   LexicalEditor,
+  $createParagraphNode,
 } from "lexical";
+import { $createHeadingNode, HeadingTagType } from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
 import {
   Bold,
   Italic,
@@ -146,7 +149,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
       },
     ],
   };
-  // TODO: the text level tools
+  // TODO: we should make the value as type to help with types
   const textLevel: DropdownTool = {
     id: "text-level",
     label: "Text Level",
@@ -169,11 +172,18 @@ export const FloatingToolbarPlugin: React.FC = () => {
         value: "paragraph",
       },
     ],
-    value: "paragraph",
+    value: selectionState.level,
     execute: (ed, value) => {
-      console.log(ed);
-      console.log(value);
-      return;
+      ed.update(() => {
+        const selection = $getSelection();
+        if (value === "paragraph") {
+          $setBlocksType(selection, () => $createParagraphNode());
+        } else {
+          $setBlocksType(selection, () =>
+            $createHeadingNode(value as HeadingTagType)
+          );
+        }
+      });
     },
   };
   const tools: Tool[] = [textLevel, formatingTextTools, alignmentsTool];

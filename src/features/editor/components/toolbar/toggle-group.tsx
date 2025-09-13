@@ -8,7 +8,6 @@ const ToolToggleGroup = ({
   tool: ToggleGroupTools;
   editor: LexicalEditor;
 }) => {
-  console.log(tool.tools.filter((tl) => tl.isActive).map((tl) => tl.id));
   return (
     <ToggleGroup
       variant={"outline"}

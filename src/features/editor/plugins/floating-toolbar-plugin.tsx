@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import FloatingToolbar from "@/features/editor/components/floating-toolbar";
 import Toolbar from "@/features/editor/components/toolbar/toolbar";
-import { ToggleGroupTools, Tool } from "../interfaces/tool";
+import { DropdownTool, ToggleGroupTools, Tool } from "../interfaces/tool";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   FORMAT_TEXT_COMMAND,
@@ -30,10 +30,8 @@ export const FloatingToolbarPlugin: React.FC = () => {
   const [selectionState, setSelectionState] = React.useState<SelectionState>(
     DEFAULT_SELECTION_STATE
   );
-  // TODO: we need manage the list of tools as state
   // TODO: we need some kind of architecture and responsibility management for the tools
   // TODO: we need to add checkers that check for each format
-  // TODO: update the is active with one boolean or maybe string like activeKey: str
 
   useEffect(() => {
     const unsubscribe = editor.registerUpdateListener(({ editorState }) => {
@@ -148,7 +146,37 @@ export const FloatingToolbarPlugin: React.FC = () => {
       },
     ],
   };
-  const tools: Tool[] = [formatingTextTools, alignmentsTool];
+  // TODO: the text level tools
+  const textLevel: DropdownTool = {
+    id: "text-level",
+    label: "Text Level",
+    type: "dropdown",
+    items: [
+      {
+        label: "Heading 1",
+        value: "h1",
+      },
+      {
+        label: "Heading 2",
+        value: "h2",
+      },
+      {
+        label: "Heading 3",
+        value: "h3",
+      },
+      {
+        label: "Text",
+        value: "paragraph",
+      },
+    ],
+    value: "paragraph",
+    execute: (ed, value) => {
+      console.log(ed);
+      console.log(value);
+      return;
+    },
+  };
+  const tools: Tool[] = [textLevel, formatingTextTools, alignmentsTool];
 
   return (
     <FloatingToolbar>

@@ -22,21 +22,19 @@ export interface ToggleGroupTools extends BaseTool {
   tools: ToggleTool[];
 }
 
-export interface DropdownItem<T extends string | number> {
+export interface DropdownItem {
   label: string;
-  value: T;
+  value: string;
   icon?: React.ReactNode;
 }
 
-export interface DropdownTool<T extends string | number> extends BaseTool {
+export interface DropdownTool extends BaseTool {
   type: "dropdown";
-  items: DropdownItem<T>[];
+  items: DropdownItem[];
   /** current value */
-  value?: T;
+  value?: string;
   /** perform action when an item is selected */
-  execute: (editor: LexicalEditor, value: T) => void;
-  /** optional: whether this tool active given the current editor state */
-  isActive: boolean;
+  execute: (editor: LexicalEditor, value: string) => void;
 }
 
 export interface CustomTool extends BaseTool {
@@ -47,8 +45,4 @@ export interface CustomTool extends BaseTool {
   render: (props: { editor: LexicalEditor }) => React.ReactNode;
 }
 
-export type Tool =
-  | ToggleTool
-  | ToggleGroupTools
-  | DropdownTool<string | number>
-  | CustomTool;
+export type Tool = ToggleTool | ToggleGroupTools | DropdownTool | CustomTool;

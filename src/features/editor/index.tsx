@@ -5,19 +5,34 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ContentEditable from "./components/content-editable";
 import { FloatingToolbarPlugin } from "./plugins";
+import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
+import { useState } from "react";
 import "./config/editor-theme.css";
 
 export default function Editor() {
+  // These refs are required by the DraggableBlockPlugin
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <FloatingToolbarPlugin />
       <RichTextPlugin
         contentEditable={
-          <ContentEditable placeholder="Write your thoughts here." />
+          <div className="relative h-96" ref={onRef}>
+            <ContentEditable placeholder="Write your thoughts here." />
+          </div>
         }
         ErrorBoundary={LexicalErrorBoundary}
       />
-      <p> lorem ipsum just some text to test.</p>
+      {floatingAnchorElem && (
+        <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+      )}
     </LexicalComposer>
   );
 }

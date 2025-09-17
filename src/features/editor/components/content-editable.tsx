@@ -10,7 +10,7 @@ export default function LexicalContentEditable({
 }: Props) {
   return (
     <ContentEditable
-      className={className ?? "border border-black h-96"}
+      className={className ?? "px-10 py-4 h-full"}
       aria-placeholder={placeholder}
       placeholder={<div>{placeholder}</div>}
     />

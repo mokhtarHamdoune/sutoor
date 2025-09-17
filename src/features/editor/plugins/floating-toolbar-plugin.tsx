@@ -10,7 +10,7 @@ import {
   LexicalEditor,
   $createParagraphNode,
 } from "lexical";
-import { $createHeadingNode, HeadingTagType } from "@lexical/rich-text";
+import { $createHeadingNode } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
 import {
   Bold,
@@ -26,6 +26,7 @@ import {
   handleSelectionUpdate,
   type SelectionState,
   DEFAULT_SELECTION_STATE,
+  TextLevel,
 } from "@/features/editor/components/utils/selection-checkers";
 
 export const FloatingToolbarPlugin: React.FC = () => {
@@ -150,7 +151,7 @@ export const FloatingToolbarPlugin: React.FC = () => {
     ],
   };
   // TODO: we should make the value as type to help with types
-  const textLevel: DropdownTool = {
+  const textLevel: DropdownTool<TextLevel> = {
     id: "text-level",
     label: "Text Level",
     type: "dropdown",
@@ -179,14 +180,12 @@ export const FloatingToolbarPlugin: React.FC = () => {
         if (value === "paragraph") {
           $setBlocksType(selection, () => $createParagraphNode());
         } else {
-          $setBlocksType(selection, () =>
-            $createHeadingNode(value as HeadingTagType)
-          );
+          $setBlocksType(selection, () => $createHeadingNode(value));
         }
       });
     },
   };
-  const tools: Tool[] = [textLevel, formatingTextTools, alignmentsTool];
+  const tools: Tool[] = [textLevel as Tool, formatingTextTools, alignmentsTool];
 
   return (
     <FloatingToolbar>

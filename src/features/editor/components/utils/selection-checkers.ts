@@ -10,7 +10,7 @@ type TextFormat = {
 
 type TextAlignment = "left" | "center" | "right" | "justify";
 
-type TextLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "paragraph";
+export type TextLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "paragraph";
 
 export type SelectionState = {
   format: TextFormat;

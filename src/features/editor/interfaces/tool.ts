@@ -1,6 +1,11 @@
 // TODO: see if we need the type of the tool
 import { LexicalEditor } from "lexical";
-export type ToolType = "toggle" | "toggle-group" | "dropdown" | "custom";
+export type ToolType =
+  | "toggle"
+  | "toggle-group"
+  | "dropdown"
+  | "custom"
+  | "value";
 
 export interface BaseTool {
   id: string;
@@ -45,4 +50,17 @@ export interface CustomTool extends BaseTool {
   render: (props: { editor: LexicalEditor }) => React.ReactNode;
 }
 
-export type Tool = ToggleTool | ToggleGroupTools | DropdownTool | CustomTool;
+export interface ValueTool extends BaseTool {
+  type: "value";
+  /** current value (e.g., selected color) */
+  value: string;
+  /** perform action when value changes */
+  execute: (editor: LexicalEditor, value: string) => void;
+}
+
+export type Tool =
+  | ToggleTool
+  | ToggleGroupTools
+  | DropdownTool
+  | CustomTool
+  | ValueTool;

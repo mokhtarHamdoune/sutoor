@@ -16,6 +16,7 @@ export type SelectionState = {
   format: TextFormat;
   alignment: TextAlignment;
   level: TextLevel;
+  textColor: string; // optional, for future use
 };
 
 export const DEFAULT_SELECTION_STATE: SelectionState = {
@@ -27,6 +28,7 @@ export const DEFAULT_SELECTION_STATE: SelectionState = {
   },
   alignment: "left",
   level: "paragraph",
+  textColor: "#000000",
 };
 
 const getTextFormat = (selection: RangeSelection): TextFormat => {
@@ -67,6 +69,15 @@ const getTextLevel = (selection: RangeSelection): TextLevel => {
   }
   return "paragraph";
 };
+
+/**
+ * Get the text color for the current selection.
+ * Falls back to black when no color is found.
+ */
+
+const getTextColor = (selection: RangeSelection): string => {
+  return "#000000";
+};
 /**
  * Placeholder for future central selection dispatcher.
  * For now it just logs selection presence; the plugin calls this
@@ -79,7 +90,8 @@ export function handleSelectionUpdate(
     const format = getTextFormat(selection);
     const alignment = getTextAlignment(selection);
     const level = getTextLevel(selection);
-    return { format, alignment, level };
+    const textColor = getTextColor(selection);
+    return { format, alignment, level, textColor };
   }
   return DEFAULT_SELECTION_STATE;
 }

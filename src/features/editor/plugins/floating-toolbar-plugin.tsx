@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import FloatingToolbar from "@/features/editor/components/floating-toolbar";
 import Toolbar from "@/features/editor/components/toolbar/toolbar";
-import { DropdownTool, ToggleGroupTools, Tool } from "../interfaces/tool";
+import {
+  DropdownTool,
+  ToggleGroupTools,
+  Tool,
+  ValueTool,
+} from "../interfaces/tool";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   FORMAT_TEXT_COMMAND,
@@ -185,7 +190,26 @@ export const FloatingToolbarPlugin: React.FC = () => {
       });
     },
   };
-  const tools: Tool[] = [textLevel as Tool, formatingTextTools, alignmentsTool];
+
+  const colorPickerTool: ValueTool = {
+    id: "color-picker",
+    label: "Color Picker",
+    type: "value",
+    value: selectionState.textColor,
+    execute: (ed, value) => {
+      return; // temporarily disable color picker
+      // ed.update(() => {
+      //   const selection = $getSelection();
+      //   $setBlocksType(selection, () => $createColorNode(value));
+      // });
+    },
+  };
+  const tools: Tool[] = [
+    textLevel as Tool,
+    formatingTextTools,
+    alignmentsTool,
+    colorPickerTool,
+  ];
 
   return (
     <FloatingToolbar>

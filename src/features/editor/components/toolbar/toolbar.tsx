@@ -3,6 +3,7 @@ import { Tool } from "../../interfaces/tool";
 import ToolButton from "./tool-btn";
 import ToolToggleGroup from "./toggle-group";
 import ToolDropDown from "./tool-dropdown";
+import ToolColorPicker from "./tool-color-picker";
 
 export const Toolbar: React.FC<{
   editor: LexicalEditor;
@@ -40,6 +41,8 @@ export const ToolRenderer: React.FC<{ editor: LexicalEditor; tool: Tool }> = ({
       return <ToolToggleGroup tool={tool} editor={editor} />;
     case "dropdown":
       return <ToolDropDown tool={tool} editor={editor} />;
+    case "value":
+      return <ToolColorPicker tool={tool} editor={editor} />;
     case "custom":
       return tool.render({ editor });
     default:

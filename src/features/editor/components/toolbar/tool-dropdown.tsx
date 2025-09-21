@@ -5,21 +5,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/shared/ui/select";
-import { LexicalEditor } from "lexical";
 import { DropdownTool } from "../../interfaces/tool";
-export function ToolDropDown({
-  tool,
-  editor,
-}: {
-  tool: DropdownTool;
-  editor: LexicalEditor;
-}) {
+export function ToolDropDown({ tool }: { tool: DropdownTool }) {
   // Component logic goes here
   return (
-    <Select
-      value={tool.value}
-      onValueChange={(value) => tool.execute(editor, value)}
-    >
+    <Select value={tool.value} onValueChange={(value) => tool.execute(value)}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={tool.label} />
       </SelectTrigger>
@@ -28,7 +18,7 @@ export function ToolDropDown({
           <SelectItem
             key={item.value}
             value={item.value}
-            onClick={() => tool.execute(editor, item.value)}
+            onClick={() => tool.execute(item.value)}
           >
             {item.label}
           </SelectItem>

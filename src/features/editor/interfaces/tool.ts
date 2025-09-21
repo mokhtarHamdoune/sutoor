@@ -19,7 +19,7 @@ export interface ToggleTool extends BaseTool {
   /** optional: whether this tool active given the current editor state */
   isActive: boolean;
   /** perform action when clicked/activated */
-  execute: (editor: LexicalEditor) => void;
+  execute: () => void;
 }
 
 export interface ToggleGroupTools extends BaseTool {
@@ -39,7 +39,7 @@ export interface DropdownTool extends BaseTool {
   /** current value */
   value?: string;
   /** perform action when an item is selected */
-  execute: (editor: LexicalEditor, value: string) => void;
+  execute: (value: string) => void;
 }
 
 export interface CustomTool extends BaseTool {
@@ -47,7 +47,7 @@ export interface CustomTool extends BaseTool {
   /** perform action when the tool is activated */
   execute: (editor: LexicalEditor) => void;
   /** custom render function */
-  render: (props: { editor: LexicalEditor }) => React.ReactNode;
+  render: () => React.ReactNode;
 }
 
 export interface ValueTool extends BaseTool {
@@ -55,7 +55,7 @@ export interface ValueTool extends BaseTool {
   /** current value (e.g., selected color) */
   value: string;
   /** perform action when value changes */
-  execute: (editor: LexicalEditor, value: string) => void;
+  execute: (value: string) => void;
 }
 
 export type Tool =

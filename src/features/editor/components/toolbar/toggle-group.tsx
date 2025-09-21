@@ -1,13 +1,6 @@
-import { LexicalEditor } from "lexical";
 import { ToggleGroupTools } from "../../interfaces/tool";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
-const ToolToggleGroup = ({
-  tool,
-  editor,
-}: {
-  tool: ToggleGroupTools;
-  editor: LexicalEditor;
-}) => {
+const ToolToggleGroup = ({ tool }: { tool: ToggleGroupTools }) => {
   return (
     <ToggleGroup
       variant={"outline"}
@@ -16,11 +9,7 @@ const ToolToggleGroup = ({
     >
       {tool.tools.map((tl) => {
         return (
-          <ToggleGroupItem
-            value={tl.id}
-            key={tl.id}
-            onClick={() => tl.execute(editor)}
-          >
+          <ToggleGroupItem value={tl.id} key={tl.id} onClick={tl.execute}>
             {tl.icon}
           </ToggleGroupItem>
         );

@@ -23,32 +23,37 @@ export const useSelectionCoord = () => {
 
   useEffect(() => {
     const getCoordinates = () => {
-      if (!allowTrack.current) {
-        setCoordinates((prev) => prev);
-        return;
-      }
       const domSelection = document.getSelection();
+      // If there's no DOM selection, clear coordinates to hide toolbar
       if (!domSelection || domSelection?.rangeCount === 0) {
         setCoordinates(null);
         return;
       }
       const range = domSelection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
+      // When tracking is disabled, keep previous coordinates stable (no movement)
+      if (!allowTrack.current) return;
       setCoordinates({
         top: Math.floor(rect.top),
         left: Math.floor(rect.left),
       });
     };
-    editor.registerUpdateListener(({ editorState }) => {
+    const unregister = editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const selection = $getSelection();
         if (!$isRangeSelection(selection) || selection.isCollapsed()) {
+          // Always clear coordinates on invalid selection so the toolbar hides,
+          // regardless of tracking state
           setCoordinates(null);
           return;
         }
         getCoordinates();
       });
     });
+
+    return () => {
+      unregister();
+    };
   }, [editor]);
 
   const allowTracking = () => {

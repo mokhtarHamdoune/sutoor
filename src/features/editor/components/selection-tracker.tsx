@@ -20,6 +20,11 @@ export const SelectionTracker = ({
     }
   }, [isTrackingAllowd, disableTracking, allowTracking]);
 
+  // When selection is cleared, render nothing so children will not be shown
+  if (!coordinates) {
+    return null;
+  }
+
   return (
     <div
       ref={ref}

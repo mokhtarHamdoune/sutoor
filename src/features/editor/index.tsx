@@ -8,6 +8,7 @@ import { FloatingToolbarPlugin } from "./plugins";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
+import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
 
 export default function Editor() {
   // These refs are required by the DraggableBlockPlugin
@@ -20,19 +21,21 @@ export default function Editor() {
   };
 
   return (
-    <LexicalComposer initialConfig={editorConfig}>
-      <FloatingToolbarPlugin />
-      <RichTextPlugin
-        contentEditable={
-          <div className="relative h-96" ref={onRef}>
-            <ContentEditable placeholder="Write your thoughts here." />
-          </div>
-        }
-        ErrorBoundary={LexicalErrorBoundary}
-      />
-      {floatingAnchorElem && (
-        <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-      )}
-    </LexicalComposer>
+    <ToolbarUIProvider>
+      <LexicalComposer initialConfig={editorConfig}>
+        <FloatingToolbarPlugin />
+        <RichTextPlugin
+          contentEditable={
+            <div className="relative h-96" ref={onRef}>
+              <ContentEditable placeholder="Write your thoughts here." />
+            </div>
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        {floatingAnchorElem && (
+          <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+        )}
+      </LexicalComposer>
+    </ToolbarUIProvider>
   );
 }

@@ -72,16 +72,31 @@ const getTextLevel = (selection: RangeSelection): TextLevel => {
 
 /**
  * Get the text color for the current selection.
- * Falls back to black when no color is found.
+ * Extracts hex color from selection style, defaults to black.
+ *
+ * @param selection - The current range selection
+ * @returns The hex color value of the selected text
  */
-
 const getTextColor = (selection: RangeSelection): string => {
+  // For now, return the default color
+  // TODO: Implement proper color extraction when we have color styling in place
+  const selectionStyle = selection.style;
+  const colorMatch = selectionStyle.match(/color:\s*(#[0-9a-fA-F]{6})/);
+  if (colorMatch && colorMatch?.length > 1 && colorMatch[1]) {
+    return colorMatch[1];
+  }
   return "#000000";
 };
 /**
- * Placeholder for future central selection dispatcher.
- * For now it just logs selection presence; the plugin calls this
- * on updates and later this function can forward to specific checkers.
+ * Central selection state handler that extracts comprehensive formatting information.
+ * Analyzes the current selection and returns formatting state including:
+ * - Text formatting (bold, italic, underline, strikethrough)
+ * - Text alignment (left, center, right, justify)
+ * - Text level/heading (h1-h6 or paragraph)
+ * - Text color (extracted from inline styles, defaults to black)
+ *
+ * @param selection - The current base selection from the editor
+ * @returns SelectionState object containing all formatting information
  */
 export function handleSelectionUpdate(
   selection: BaseSelection

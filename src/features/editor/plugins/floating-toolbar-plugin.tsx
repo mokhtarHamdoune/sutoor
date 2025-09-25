@@ -25,12 +25,20 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  ListOrdered,
+  List,
+  ListChecks,
 } from "lucide-react";
 import {
   handleSelectionUpdate,
   type SelectionState,
   DEFAULT_SELECTION_STATE,
 } from "@/features/editor/components/utils/selection-checkers";
+import {
+  INSERT_CHECK_LIST_COMMAND,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+} from "@lexical/list";
 
 export const FloatingToolbarPlugin: React.FC = memo(() => {
   const [editor] = useLexicalComposerContext();
@@ -42,7 +50,7 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
     (a: SelectionState, b: SelectionState) => {
       return (
         a.alignment === b.alignment &&
-        a.level === b.level &&
+        a.element?.type === b.element?.type &&
         a.textColor === b.textColor &&
         a.format.bold === b.format.bold &&
         a.format.italic === b.format.italic &&
@@ -189,7 +197,10 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           value: "paragraph",
         },
       ],
-      value: selectionState.level,
+      value:
+        selectionState.element?.type === "heading"
+          ? selectionState.element.tag
+          : "paragraph",
       execute: (value) => {
         editor.update(() => {
           const selection = $getSelection();
@@ -217,18 +228,61 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
         });
       },
     };
+    // TODO:  dispatch and isactive for list tools
+    const listGroupTools: ToggleGroupTools = {
+      id: "list",
+      label: "Lists",
+      type: "toggle-group",
+      tools: [
+        {
+          id: "bullet-list",
+          label: "Bullet List",
+          icon: <List />,
+          type: "toggle",
+          execute: () => {
+            editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+          },
+          isActive:
+            selectionState.element?.type === "list" &&
+            selectionState.element.listType === "bullet",
+        },
+        {
+          id: "numbered-list",
+          label: "Numbered List",
+          icon: <ListOrdered />,
+          type: "toggle",
+          execute: () => {
+            editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+          },
+          isActive:
+            selectionState.element?.type === "list" &&
+            selectionState.element.listType === "number",
+        },
+        {
+          id: "check-list",
+          label: "Check List",
+          icon: <ListChecks />,
+          type: "toggle",
+          execute: () => {
+            editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);
+          },
+          isActive: false,
+        },
+      ],
+    };
 
     return [
       textLevel as Tool,
       formatingTextTools,
       alignmentsTool,
+      listGroupTools,
       colorPickerTool,
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectionState.alignment,
     selectionState.format,
-    selectionState.level,
+    selectionState.element,
     selectionState.textColor,
   ]);
 

@@ -1,5 +1,6 @@
 import { $isRangeSelection, BaseSelection, RangeSelection } from "lexical";
 import { $isHeadingNode } from "@lexical/rich-text";
+import { $isListNode } from "@lexical/list";
 
 type TextFormat = {
   bold: boolean;
@@ -12,11 +13,27 @@ type TextAlignment = "left" | "center" | "right" | "justify";
 
 export type TextLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "paragraph";
 
+interface ParagraphElement {
+  type: "paragraph";
+}
+interface ListElement {
+  type: "list";
+  // Possible values: "bullet" for bulleted lists, "number" for numbered lists
+  listType: "bullet" | "number";
+}
+
+interface HeadingElement {
+  type: "heading";
+  tag: TextLevel;
+}
+
+type EditorElement = HeadingElement | ListElement | ParagraphElement;
+
 export type SelectionState = {
   format: TextFormat;
   alignment: TextAlignment;
-  level: TextLevel;
   textColor: string; // optional, for future use
+  element: ParagraphElement | ListElement | HeadingElement | null;
 };
 
 export const DEFAULT_SELECTION_STATE: SelectionState = {
@@ -27,8 +44,8 @@ export const DEFAULT_SELECTION_STATE: SelectionState = {
     strikethrough: false,
   },
   alignment: "left",
-  level: "paragraph",
   textColor: "#000000",
+  element: null,
 };
 
 const getTextFormat = (selection: RangeSelection): TextFormat => {
@@ -54,23 +71,6 @@ const getTextAlignment = (selection: RangeSelection): TextAlignment => {
 };
 
 /**
- * Detect the text level for the current selection.
- * Walks up from the first selected node to find an element with a heading tag (h1..h6).
- * Falls back to "paragraph" when no heading tag is found.
- */
-const getTextLevel = (selection: RangeSelection): TextLevel => {
-  const nodes = selection.getNodes();
-  if (!nodes || nodes.length === 0) return "paragraph";
-
-  const firstNode = nodes[0];
-  const elementNode = firstNode.getTopLevelElement();
-  if ($isHeadingNode(elementNode)) {
-    return elementNode.getTag();
-  }
-  return "paragraph";
-};
-
-/**
  * Get the text color for the current selection.
  * Extracts hex color from selection style, defaults to black.
  *
@@ -86,6 +86,25 @@ const getTextColor = (selection: RangeSelection): string => {
     return colorMatch[1];
   }
   return "#000000";
+};
+
+const getElement = (selection: RangeSelection): EditorElement | null => {
+  const nodes = selection.getNodes();
+  if (!nodes || nodes.length === 0) return null;
+
+  const firstNode = nodes[0];
+  const elementNode = firstNode.getTopLevelElement();
+  if ($isHeadingNode(elementNode)) {
+    return { type: "heading", tag: elementNode.getTag() as TextLevel };
+  } else if ($isListNode(elementNode)) {
+    const listType = elementNode.getListType();
+    if (listType === "bullet" || listType === "number") {
+      return { type: "list", listType: listType };
+    }
+  } else {
+    return { type: "paragraph" };
+  }
+  return null;
 };
 /**
  * Central selection state handler that extracts comprehensive formatting information.
@@ -104,9 +123,9 @@ export function handleSelectionUpdate(
   if ($isRangeSelection(selection)) {
     const format = getTextFormat(selection);
     const alignment = getTextAlignment(selection);
-    const level = getTextLevel(selection);
     const textColor = getTextColor(selection);
-    return { format, alignment, level, textColor };
+    const element = getElement(selection);
+    return { format, alignment, textColor, element };
   }
   return DEFAULT_SELECTION_STATE;
 }

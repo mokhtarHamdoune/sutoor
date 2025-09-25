@@ -6,6 +6,7 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ContentEditable from "./components/content-editable";
 import { FloatingToolbarPlugin } from "./plugins";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
@@ -35,6 +36,7 @@ export default function Editor() {
         {floatingAnchorElem && (
           <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
         )}
+        <ListPlugin hasStrictIndent />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

@@ -50,12 +50,9 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
     (a: SelectionState, b: SelectionState) => {
       return (
         a.alignment === b.alignment &&
-        a.element?.type === b.element?.type &&
+        JSON.stringify(a.element) === JSON.stringify(b.element) &&
         a.textColor === b.textColor &&
-        a.format.bold === b.format.bold &&
-        a.format.italic === b.format.italic &&
-        a.format.underline === b.format.underline &&
-        a.format.strikethrough === b.format.strikethrough
+        JSON.stringify(a.format) === JSON.stringify(b.format)
       );
     },
     []
@@ -240,6 +237,19 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           icon: <List />,
           type: "toggle",
           execute: () => {
+            if (
+              selectionState.element?.type === "list" &&
+              selectionState.element.listType === "bullet"
+            ) {
+              // If already in a list, toggle off to paragraph
+              editor.update(() => {
+                const selection = $getSelection();
+                if (selection) {
+                  $setBlocksType(selection, () => $createParagraphNode());
+                }
+              });
+              return;
+            }
             editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
           },
           isActive:
@@ -252,6 +262,19 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           icon: <ListOrdered />,
           type: "toggle",
           execute: () => {
+            if (
+              selectionState.element?.type === "list" &&
+              selectionState.element.listType === "number"
+            ) {
+              // If already in a list, toggle off to paragraph
+              editor.update(() => {
+                const selection = $getSelection();
+                if (selection) {
+                  $setBlocksType(selection, () => $createParagraphNode());
+                }
+              });
+              return;
+            }
             editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
           },
           isActive:

@@ -4,7 +4,7 @@ import { editorConfig } from "./config/editor-config";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ContentEditable from "./components/content-editable";
-import { FloatingToolbarPlugin } from "./plugins";
+import { FloatingToolbarPlugin, LinkPlugin } from "./plugins";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
@@ -37,6 +37,7 @@ export default function Editor() {
           <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
         )}
         <ListPlugin hasStrictIndent />
+        <LinkPlugin hasLinkAttributes={true} />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

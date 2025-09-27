@@ -1,6 +1,12 @@
-import { $isRangeSelection, BaseSelection, RangeSelection } from "lexical";
+import {
+  $isRangeSelection,
+  BaseSelection,
+  RangeSelection,
+  type LexicalNode,
+} from "lexical";
 import { $isHeadingNode } from "@lexical/rich-text";
 import { $isListNode } from "@lexical/list";
+import { $isLinkNode } from "@lexical/link";
 
 type TextFormat = {
   bold: boolean;
@@ -34,6 +40,7 @@ export type SelectionState = {
   alignment: TextAlignment;
   textColor: string; // optional, for future use
   element: ParagraphElement | ListElement | HeadingElement | null;
+  isLinkActive: boolean;
 };
 
 export const DEFAULT_SELECTION_STATE: SelectionState = {
@@ -46,6 +53,7 @@ export const DEFAULT_SELECTION_STATE: SelectionState = {
   alignment: "left",
   textColor: "#000000",
   element: null,
+  isLinkActive: false,
 };
 
 const getTextFormat = (selection: RangeSelection): TextFormat => {
@@ -106,6 +114,37 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
   }
   return null;
 };
+
+// Walk up to find the nearest LinkNode (checking self first).
+// Why not just getParent()? Because:
+// - The current node can be the LinkNode itself (parent would skip it).
+// - There can be inline wrappers between text and the LinkNode.
+// - Walking ancestors is shallow and avoids false negatives.
+const getNearestLinkAncestor = (node: LexicalNode | null) => {
+  let cur: LexicalNode | null = node;
+  while (cur) {
+    if ($isLinkNode(cur)) return cur;
+    cur = cur.getParent();
+  }
+  return null;
+};
+
+// Determine if the selection is inside a link.
+// - Collapsed (caret or cursor): active if caret is anywhere inside a LinkNode.
+// - Range: active only if both ends are within the same LinkNode.
+//   We compare node keys because instances can differ across reads,
+//   while keys are stable identifiers for the same node.
+const isLinkNode = (selection: RangeSelection) => {
+  if (selection.isCollapsed()) {
+    return !!getNearestLinkAncestor(selection.anchor.getNode());
+  }
+  const anchorLink = getNearestLinkAncestor(selection.anchor.getNode());
+  const focusLink = getNearestLinkAncestor(selection.focus.getNode());
+  return (
+    !!anchorLink && !!focusLink && anchorLink.getKey() === focusLink.getKey()
+  );
+};
+
 /**
  * Central selection state handler that extracts comprehensive formatting information.
  * Analyzes the current selection and returns formatting state including:
@@ -125,7 +164,8 @@ export function handleSelectionUpdate(
     const alignment = getTextAlignment(selection);
     const textColor = getTextColor(selection);
     const element = getElement(selection);
-    return { format, alignment, textColor, element };
+    const isLinkActive = isLinkNode(selection);
+    return { format, alignment, textColor, element, isLinkActive };
   }
   return DEFAULT_SELECTION_STATE;
 }

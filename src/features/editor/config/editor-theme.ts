@@ -33,4 +33,5 @@ export const editorTheme: EditorThemeClasses = {
       "editor-list-ol5",
     ],
   },
+  link: "editor-link",
 };

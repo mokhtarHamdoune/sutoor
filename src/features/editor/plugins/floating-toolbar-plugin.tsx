@@ -27,18 +27,18 @@ import {
   AlignJustify,
   ListOrdered,
   List,
-  ListChecks,
+  Link,
 } from "lucide-react";
 import {
   handleSelectionUpdate,
   type SelectionState,
   DEFAULT_SELECTION_STATE,
-} from "@/features/editor/components/utils/selection-checkers";
+} from "@/features/editor/utils/selection-checkers";
 import {
-  INSERT_CHECK_LIST_COMMAND,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list";
+import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 
 export const FloatingToolbarPlugin: React.FC = memo(() => {
   const [editor] = useLexicalComposerContext();
@@ -52,7 +52,8 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
         a.alignment === b.alignment &&
         JSON.stringify(a.element) === JSON.stringify(b.element) &&
         a.textColor === b.textColor &&
-        JSON.stringify(a.format) === JSON.stringify(b.format)
+        JSON.stringify(a.format) === JSON.stringify(b.format) &&
+        a.isLinkActive === b.isLinkActive
       );
     },
     []
@@ -282,14 +283,25 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
             selectionState.element.listType === "number",
         },
         {
-          id: "check-list",
-          label: "Check List",
-          icon: <ListChecks />,
+          id: "link",
+          label: "Link",
+          icon: <Link />,
           type: "toggle",
           execute: () => {
-            editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);
+            if (selectionState.isLinkActive) {
+              // Remove link
+              editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+            } else {
+              const url = window.prompt("Enter URL");
+              if (url) {
+                editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+                  url,
+                  target: "_blank",
+                });
+              }
+            }
           },
-          isActive: false,
+          isActive: selectionState.isLinkActive,
         },
       ],
     };
@@ -307,6 +319,7 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
     selectionState.format,
     selectionState.element,
     selectionState.textColor,
+    selectionState.isLinkActive,
   ]);
 
   return (

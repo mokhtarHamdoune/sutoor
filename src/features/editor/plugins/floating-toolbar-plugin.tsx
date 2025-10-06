@@ -39,6 +39,8 @@ import {
   INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list";
 import { TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./FloatingLinkPlugin/command";
+import { getSelectionCoordinates } from "../utils/selection-checkers";
 
 export const FloatingToolbarPlugin: React.FC = memo(() => {
   const [editor] = useLexicalComposerContext();
@@ -53,7 +55,8 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
         JSON.stringify(a.element) === JSON.stringify(b.element) &&
         a.textColor === b.textColor &&
         JSON.stringify(a.format) === JSON.stringify(b.format) &&
-        a.isLinkActive === b.isLinkActive
+        a.isLinkActive === b.isLinkActive &&
+        a.linkUrl === b.linkUrl
       );
     },
     []
@@ -289,16 +292,15 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           type: "toggle",
           execute: () => {
             if (selectionState.isLinkActive) {
-              // Remove link
+              // Remove existing link
               editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
             } else {
-              const url = window.prompt("Enter URL");
-              if (url) {
-                editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
-                  url,
-                  target: "_blank",
-                });
-              }
+              // Show floating link input for new links
+              const coordinates = getSelectionCoordinates();
+              editor.dispatchCommand(SHOW_FLOATING_LINK_INPUT_COMMAND, {
+                url: selectionState.linkUrl || "",
+                coordinates: coordinates || undefined,
+              });
             }
           },
           isActive: selectionState.isLinkActive,
@@ -320,6 +322,7 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
     selectionState.element,
     selectionState.textColor,
     selectionState.isLinkActive,
+    selectionState.linkUrl,
   ]);
 
   return (

@@ -41,6 +41,7 @@ export type SelectionState = {
   textColor: string; // optional, for future use
   element: ParagraphElement | ListElement | HeadingElement | null;
   isLinkActive: boolean;
+  linkUrl: string | null; // Add the actual link URL
 };
 
 export const DEFAULT_SELECTION_STATE: SelectionState = {
@@ -54,6 +55,7 @@ export const DEFAULT_SELECTION_STATE: SelectionState = {
   textColor: "#000000",
   element: null,
   isLinkActive: false,
+  linkUrl: null,
 };
 
 const getTextFormat = (selection: RangeSelection): TextFormat => {
@@ -120,7 +122,7 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
 // - The current node can be the LinkNode itself (parent would skip it).
 // - There can be inline wrappers between text and the LinkNode.
 // - Walking ancestors is shallow and avoids false negatives.
-const getNearestLinkAncestor = (node: LexicalNode | null) => {
+export const getNearestLinkAncestor = (node: LexicalNode | null) => {
   let cur: LexicalNode | null = node;
   while (cur) {
     if ($isLinkNode(cur)) return cur;
@@ -134,7 +136,7 @@ const getNearestLinkAncestor = (node: LexicalNode | null) => {
 // - Range: active only if both ends are within the same LinkNode.
 //   We compare node keys because instances can differ across reads,
 //   while keys are stable identifiers for the same node.
-const isLinkNode = (selection: RangeSelection) => {
+export const isLinkSelection = (selection: RangeSelection) => {
   if (selection.isCollapsed()) {
     return !!getNearestLinkAncestor(selection.anchor.getNode());
   }
@@ -143,6 +145,12 @@ const isLinkNode = (selection: RangeSelection) => {
   return (
     !!anchorLink && !!focusLink && anchorLink.getKey() === focusLink.getKey()
   );
+};
+
+// Get the URL of the link in the current selection
+export const getLinkUrl = (selection: RangeSelection): string | null => {
+  const linkNode = getNearestLinkAncestor(selection.anchor.getNode());
+  return linkNode ? linkNode.getURL() : null;
 };
 
 /**
@@ -164,8 +172,23 @@ export function handleSelectionUpdate(
     const alignment = getTextAlignment(selection);
     const textColor = getTextColor(selection);
     const element = getElement(selection);
-    const isLinkActive = isLinkNode(selection);
-    return { format, alignment, textColor, element, isLinkActive };
+    const isLinkActive = isLinkSelection(selection);
+    const linkUrl = getLinkUrl(selection);
+    return { format, alignment, textColor, element, isLinkActive, linkUrl };
   }
   return DEFAULT_SELECTION_STATE;
 }
+
+export const getSelectionCoordinates = () => {
+  const domSelection = document.getSelection();
+  // If there's no DOM selection, clear coordinates to hide toolbar
+  if (!domSelection || domSelection?.rangeCount === 0) {
+    return null;
+  }
+  const range = domSelection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  return {
+    top: Math.floor(rect.top),
+    left: Math.floor(rect.left),
+  };
+};

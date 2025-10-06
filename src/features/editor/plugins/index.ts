@@ -1,2 +1,5 @@
 export * from "./floating-toolbar-plugin";
 export * from "./LinkPlugin";
+export * from "./DraggableBlockPlugin";
+export * from "./FloatingLinkPlugin";
+export * from "./AutoFocusPlugin";

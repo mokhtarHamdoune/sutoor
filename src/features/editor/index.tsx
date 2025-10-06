@@ -4,7 +4,12 @@ import { editorConfig } from "./config/editor-config";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ContentEditable from "./components/content-editable";
-import { FloatingToolbarPlugin, LinkPlugin } from "./plugins";
+import {
+  AutoFocusPlugin,
+  FloatingLink,
+  FloatingToolbarPlugin,
+  LinkPlugin,
+} from "./plugins";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
@@ -38,6 +43,8 @@ export default function Editor() {
         )}
         <ListPlugin hasStrictIndent />
         <LinkPlugin hasLinkAttributes={true} />
+        <FloatingLink />
+        <AutoFocusPlugin />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

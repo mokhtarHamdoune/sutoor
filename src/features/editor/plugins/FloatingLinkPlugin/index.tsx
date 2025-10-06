@@ -1,9 +1,13 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { COMMAND_PRIORITY_HIGH } from "lexical";
+import {
+  $getSelection,
+  $isRangeSelection,
+  COMMAND_PRIORITY_HIGH,
+} from "lexical";
 import { useEffect, useRef, useState } from "react";
 import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { sanitizeUrl } from "../../utils/url";
-import { BadgeCheck, BadgeX } from "lucide-react";
+import { BadgeCheck, Trash } from "lucide-react";
 import {
   InputGroup,
   InputGroupAddon,
@@ -11,8 +15,14 @@ import {
   InputGroupInput,
 } from "@/shared/ui/input-group";
 import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./command";
+import {
+  getNearestLinkAncestor,
+  getSelectionCoordinates,
+  isLinkSelection,
+} from "../../utils/selection-checkers";
 // TODO: Add clickable link that opens the link in new tab
 // TODO: Show the floating input when user clicks on existing links for editing
+// TODO: Add the enter keydown later
 
 export const FloatingLink = () => {
   const [editor] = useLexicalComposerContext();
@@ -44,26 +54,40 @@ export const FloatingLink = () => {
     );
   }, [editor]);
 
-  // useEffect(() => {
-  //   // Reset the link box coordinates when the selection changes
-  //   return editor.registerUpdateListener(({ editorState }) => {
-  //     editorState.read(() => {
-  //       const selection = $getSelection();
-  //       if (
-  //         $isRangeSelection(selection) &&
-  //         isLinkSelection(selection) &&
-  //         selection.isCollapsed()
-  //       ) {
-  //         const coords = getSelectionCoordinates();
-  //         const linkNode = getNearestLinkAncestor(selection.anchor.getNode());
-  //         if (linkNode) {
-  //           setCurrentUrl(linkNode.getURL());
-  //           setLinkBoxCoordinates(coords);
-  //         }
-  //       }
-  //     });
-  //   });
-  // }, [editor]);
+  useEffect(() => {
+    // Show link input when user clicks inside a link (but not at the end)
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const selection = $getSelection();
+        if (
+          $isRangeSelection(selection) &&
+          isLinkSelection(selection) &&
+          selection.isCollapsed()
+        ) {
+          const anchorNode = selection.anchor.getNode();
+          const offset = selection.anchor.offset;
+          const textContent = anchorNode.getTextContent();
+
+          // Only show the input if cursor is NOT at the end of the text
+          // This prevents the input from appearing when typing after a link
+          if (offset < textContent.length) {
+            const coords = getSelectionCoordinates();
+            const linkNode = getNearestLinkAncestor(anchorNode);
+            if (linkNode) {
+              setCurrentUrl(linkNode.getURL());
+              setLinkBoxCoordinates(coords);
+            }
+          } else {
+            // Cursor is at the end, hide the input
+            setLinkBoxCoordinates(null);
+          }
+        } else {
+          // Selection is not in a link or not collapsed, hide the input
+          setLinkBoxCoordinates(null);
+        }
+      });
+    });
+  }, [editor]);
 
   useEffect(() => {
     // Focus the input when the floating link appears
@@ -97,19 +121,6 @@ export const FloatingLink = () => {
           onChange={(e) => {
             setCurrentUrl(e.target.value);
           }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && currentUrl.trim()) {
-              editor.dispatchCommand(
-                TOGGLE_LINK_COMMAND,
-                sanitizeUrl(currentUrl.trim())
-              );
-              setLinkBoxCoordinates(null);
-              setCurrentUrl("");
-            } else if (e.key === "Escape") {
-              setLinkBoxCoordinates(null);
-              setCurrentUrl("");
-            }
-          }}
         />
         <InputGroupAddon>
           <InputGroupText>https://</InputGroupText>
@@ -131,9 +142,9 @@ export const FloatingLink = () => {
             setCurrentUrl("");
           }}
         />
-        <BadgeX
+        <Trash
           size={20}
-          className="text-red-200 hover:text-red-100 cursor-pointer"
+          className="text-red-300 hover:text-red-200 cursor-pointer"
           onClick={() => {
             setLinkBoxCoordinates(null);
             setCurrentUrl("");

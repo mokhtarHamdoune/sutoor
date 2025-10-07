@@ -14,13 +14,15 @@ import {
   InputGroupText,
   InputGroupInput,
 } from "@/shared/ui/input-group";
+import { Button } from "@/shared/ui/button";
 import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./command";
 import {
   getNearestLinkAncestor,
   getSelectionCoordinates,
   isLinkSelection,
 } from "../../utils/selection-checkers";
-
+// TODO: add https:// prefix by default when the user open up the url, the url does not open up properly
+// TODO: refactor the FloatingLink component into smaller components for better readability and maintainability
 export const FloatingLink = () => {
   const [editor] = useLexicalComposerContext();
   const [linkBoxCoordinates, setLinkBoxCoordinates] = useState<null | {
@@ -208,28 +210,34 @@ const LinkViewMode: React.FC<LinkViewModeProps> = ({
 
       {/* Action Buttons */}
       <div className="flex items-center gap-x-2">
-        <button
+        <Button
           onClick={onOpen}
           disabled={!url}
-          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
+          variant="default"
+          size="sm"
+          className="cursor-pointer"
         >
-          <ExternalLink size={14} />
-          <span>Open</span>
-        </button>
-        <button
+          <ExternalLink />
+          Open
+        </Button>
+        <Button
           onClick={onEdit}
-          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors"
+          variant="secondary"
+          size="sm"
+          className="cursor-pointer"
         >
-          <Pencil size={14} />
-          <span>Edit</span>
-        </button>
-        <button
+          <Pencil />
+          Edit
+        </Button>
+        <Button
           onClick={onRemove}
-          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+          variant="secondary"
+          size="sm"
+          className="cursor-pointer"
         >
-          <Trash size={14} />
-          <span>Remove</span>
-        </button>
+          <Trash className="text-red-500" />
+          Remove
+        </Button>
       </div>
     </div>
   );
@@ -278,21 +286,25 @@ const LinkEditMode: React.FC<LinkEditModeProps> = ({
       </InputGroup>
 
       <div className="flex items-center justify-between">
-        <button
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors"
+          variant="outline"
+          size="sm"
+          className="cursor-pointer"
         >
-          <X size={14} />
-          <span>Cancel</span>
-        </button>
-        <button
+          <X />
+          Cancel
+        </Button>
+        <Button
           onClick={onSave}
           disabled={!url.trim()}
-          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-500"
+          variant="default"
+          size="sm"
+          className="cursor-pointer disabled:cursor-not-allowed"
         >
-          <BadgeCheck size={14} />
-          <span>Save</span>
-        </button>
+          <BadgeCheck />
+          Save
+        </Button>
       </div>
     </div>
   );

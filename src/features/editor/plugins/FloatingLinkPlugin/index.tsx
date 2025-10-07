@@ -7,22 +7,15 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { sanitizeUrl } from "../../utils/url";
-import { BadgeCheck, Trash, ExternalLink, Pencil, X } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupInput,
-} from "@/shared/ui/input-group";
-import { Button } from "@/shared/ui/button";
 import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./command";
 import {
   getNearestLinkAncestor,
   getSelectionCoordinates,
   isLinkSelection,
 } from "../../utils/selection-checkers";
-// TODO: add https:// prefix by default when the user open up the url, the url does not open up properly
-// TODO: refactor the FloatingLink component into smaller components for better readability and maintainability
+import { LinkViewMode } from "./link-view-mode";
+import { LinkEditMode } from "./link-edit-mode";
+
 export const FloatingLink = () => {
   const [editor] = useLexicalComposerContext();
   const [linkBoxCoordinates, setLinkBoxCoordinates] = useState<null | {
@@ -175,137 +168,6 @@ export const FloatingLink = () => {
           onOpen={handleOpenLink}
         />
       )}
-    </div>
-  );
-};
-
-// View Mode Component - Shows link preview with actions
-interface LinkViewModeProps {
-  url: string;
-  onEdit: () => void;
-  onRemove: () => void;
-  onOpen: () => void;
-}
-
-const LinkViewMode: React.FC<LinkViewModeProps> = ({
-  url,
-  onEdit,
-  onRemove,
-  onOpen,
-}) => {
-  // Simple URL truncation: show first 47 chars + "..." if too long
-  const displayUrl = url.length > 50 ? url.substring(0, 47) + "..." : url;
-  // Fallback for empty URLs
-  const urlToDisplay = displayUrl || "No URL";
-
-  return (
-    <div className="flex flex-col gap-y-2">
-      {/* URL Display */}
-      <div className="flex items-center gap-x-2">
-        <ExternalLink size={16} className="text-slate-400 flex-shrink-0" />
-        <span className="text-sm text-slate-700 truncate" title={url}>
-          {urlToDisplay}
-        </span>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex items-center gap-x-2">
-        <Button
-          onClick={onOpen}
-          disabled={!url}
-          variant="default"
-          size="sm"
-          className="cursor-pointer"
-        >
-          <ExternalLink />
-          Open
-        </Button>
-        <Button
-          onClick={onEdit}
-          variant="secondary"
-          size="sm"
-          className="cursor-pointer"
-        >
-          <Pencil />
-          Edit
-        </Button>
-        <Button
-          onClick={onRemove}
-          variant="secondary"
-          size="sm"
-          className="cursor-pointer"
-        >
-          <Trash className="text-red-500" />
-          Remove
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-// Edit Mode Component - Shows input field for editing link URL
-interface LinkEditModeProps {
-  url: string;
-  onChange: (value: string) => void;
-  onSave: () => void;
-  onCancel: () => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-}
-
-const LinkEditMode: React.FC<LinkEditModeProps> = ({
-  url,
-  onChange,
-  onSave,
-  onCancel,
-  inputRef,
-}) => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      onSave();
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      onCancel();
-    }
-  };
-
-  return (
-    <div className="flex flex-col gap-y-2">
-      <InputGroup className="w-64 bg-white">
-        <InputGroupInput
-          ref={inputRef}
-          placeholder="example.com"
-          className="!pl-1"
-          value={url}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-        <InputGroupAddon>
-          <InputGroupText>https://</InputGroupText>
-        </InputGroupAddon>
-      </InputGroup>
-
-      <div className="flex items-center justify-between">
-        <Button
-          onClick={onCancel}
-          variant="outline"
-          size="sm"
-          className="cursor-pointer"
-        >
-          <X />
-          Cancel
-        </Button>
-        <Button
-          onClick={onSave}
-          disabled={!url.trim()}
-          variant="default"
-          size="sm"
-          className="cursor-pointer disabled:cursor-not-allowed"
-        >
-          <BadgeCheck />
-          Save
-        </Button>
-      </div>
     </div>
   );
 };

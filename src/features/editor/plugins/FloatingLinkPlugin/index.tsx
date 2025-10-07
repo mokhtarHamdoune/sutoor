@@ -7,7 +7,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { sanitizeUrl } from "../../utils/url";
-import { BadgeCheck, Trash } from "lucide-react";
+import { BadgeCheck, Trash, ExternalLink, Pencil, X } from "lucide-react";
 import {
   InputGroup,
   InputGroupAddon,
@@ -20,9 +20,6 @@ import {
   getSelectionCoordinates,
   isLinkSelection,
 } from "../../utils/selection-checkers";
-// TODO: Add clickable link that opens the link in new tab
-// TODO: Show the floating input when user clicks on existing links for editing
-// TODO: Add the enter keydown later
 
 export const FloatingLink = () => {
   const [editor] = useLexicalComposerContext();
@@ -31,7 +28,9 @@ export const FloatingLink = () => {
     left: number;
   }>(null);
   const [currentUrl, setCurrentUrl] = useState<string>("");
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const originalUrlRef = useRef<string>(""); // Use ref instead of state - no re-renders needed
 
   useEffect(() => {
     return editor.registerCommand(
@@ -45,8 +44,11 @@ export const FloatingLink = () => {
         if (coordinates) {
           setLinkBoxCoordinates(coordinates);
           setCurrentUrl(url);
+          originalUrlRef.current = url; // Save original URL for cancel functionality
+          setIsEditMode(true); // Start in edit mode for new links from toolbar
         } else {
           setLinkBoxCoordinates(null);
+          setIsEditMode(false);
         }
         return false;
       },
@@ -55,7 +57,7 @@ export const FloatingLink = () => {
   }, [editor]);
 
   useEffect(() => {
-    // Show link input when user clicks inside a link (but not at the end)
+    // Show link popup when user clicks inside a link (but not at the end)
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const selection = $getSelection();
@@ -68,21 +70,24 @@ export const FloatingLink = () => {
           const offset = selection.anchor.offset;
           const textContent = anchorNode.getTextContent();
 
-          // Only show the input if cursor is NOT at the end of the text
-          // This prevents the input from appearing when typing after a link
+          // Only show the popup if cursor is NOT at the end of the text
+          // This prevents the popup from appearing when typing after a link
           if (offset < textContent.length) {
             const coords = getSelectionCoordinates();
             const linkNode = getNearestLinkAncestor(anchorNode);
             if (linkNode) {
-              setCurrentUrl(linkNode.getURL());
+              const url = linkNode.getURL();
+              setCurrentUrl(url);
+              originalUrlRef.current = url; // Save original URL for cancel functionality
               setLinkBoxCoordinates(coords);
+              setIsEditMode(false); // Start in view mode for existing links
             }
           } else {
-            // Cursor is at the end, hide the input
+            // Cursor is at the end, hide the popup
             setLinkBoxCoordinates(null);
           }
         } else {
-          // Selection is not in a link or not collapsed, hide the input
+          // Selection is not in a link or not collapsed, hide the popup
           setLinkBoxCoordinates(null);
         }
       });
@@ -90,12 +95,52 @@ export const FloatingLink = () => {
   }, [editor]);
 
   useEffect(() => {
-    // Focus the input when the floating link appears
-    if (linkBoxCoordinates && inputRef.current) {
+    // Focus the input when the floating link appears in edit mode
+    if (linkBoxCoordinates && isEditMode && inputRef.current) {
       inputRef.current.focus();
       inputRef.current.select();
     }
-  }, [linkBoxCoordinates]);
+  }, [linkBoxCoordinates, isEditMode]);
+
+  // Handler functions for LinkViewMode
+  const handleOpenLink = () => {
+    if (currentUrl) {
+      window.open(sanitizeUrl(currentUrl), "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleEditLink = () => {
+    setIsEditMode(true);
+  };
+
+  const handleRemoveLink = () => {
+    editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    setLinkBoxCoordinates(null);
+    setCurrentUrl("");
+  };
+
+  // Handler functions for LinkEditMode
+  const handleSaveLink = () => {
+    if (currentUrl.trim()) {
+      editor.dispatchCommand(
+        TOGGLE_LINK_COMMAND,
+        sanitizeUrl(currentUrl.trim())
+      );
+      setIsEditMode(false); // Switch back to view mode after saving
+    }
+  };
+
+  const handleCancelEdit = () => {
+    // If this was a new link (empty original URL), close the popup entirely
+    if (!originalUrlRef.current.trim()) {
+      setLinkBoxCoordinates(null);
+      setCurrentUrl("");
+    } else {
+      // If editing existing link, restore original URL and go back to view mode
+      setCurrentUrl(originalUrlRef.current);
+      setIsEditMode(false);
+    }
+  };
 
   if (linkBoxCoordinates === null) {
     return null;
@@ -107,49 +152,147 @@ export const FloatingLink = () => {
         position: "absolute",
         top: linkBoxCoordinates
           ? `${linkBoxCoordinates.top + 20}px`
-          : "-1000px", // Position above selection or hide
+          : "-1000px",
         left: linkBoxCoordinates ? `${linkBoxCoordinates.left}px` : "-1000px",
       }}
-      className="flex items-center gap-x-4 p-3 border rounded-md shadow bg-primary-foreground"
+      className="p-3 border rounded-md shadow bg-primary-foreground"
     >
+      {isEditMode ? (
+        <LinkEditMode
+          url={currentUrl}
+          onChange={setCurrentUrl}
+          onSave={handleSaveLink}
+          onCancel={handleCancelEdit}
+          inputRef={inputRef}
+        />
+      ) : (
+        <LinkViewMode
+          url={currentUrl}
+          onEdit={handleEditLink}
+          onRemove={handleRemoveLink}
+          onOpen={handleOpenLink}
+        />
+      )}
+    </div>
+  );
+};
+
+// View Mode Component - Shows link preview with actions
+interface LinkViewModeProps {
+  url: string;
+  onEdit: () => void;
+  onRemove: () => void;
+  onOpen: () => void;
+}
+
+const LinkViewMode: React.FC<LinkViewModeProps> = ({
+  url,
+  onEdit,
+  onRemove,
+  onOpen,
+}) => {
+  // Simple URL truncation: show first 47 chars + "..." if too long
+  const displayUrl = url.length > 50 ? url.substring(0, 47) + "..." : url;
+  // Fallback for empty URLs
+  const urlToDisplay = displayUrl || "No URL";
+
+  return (
+    <div className="flex flex-col gap-y-2">
+      {/* URL Display */}
+      <div className="flex items-center gap-x-2">
+        <ExternalLink size={16} className="text-slate-400 flex-shrink-0" />
+        <span className="text-sm text-slate-700 truncate" title={url}>
+          {urlToDisplay}
+        </span>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex items-center gap-x-2">
+        <button
+          onClick={onOpen}
+          disabled={!url}
+          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
+        >
+          <ExternalLink size={14} />
+          <span>Open</span>
+        </button>
+        <button
+          onClick={onEdit}
+          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors"
+        >
+          <Pencil size={14} />
+          <span>Edit</span>
+        </button>
+        <button
+          onClick={onRemove}
+          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+        >
+          <Trash size={14} />
+          <span>Remove</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Edit Mode Component - Shows input field for editing link URL
+interface LinkEditModeProps {
+  url: string;
+  onChange: (value: string) => void;
+  onSave: () => void;
+  onCancel: () => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+}
+
+const LinkEditMode: React.FC<LinkEditModeProps> = ({
+  url,
+  onChange,
+  onSave,
+  onCancel,
+  inputRef,
+}) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSave();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      onCancel();
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-y-2">
       <InputGroup className="w-64 bg-white">
         <InputGroupInput
           ref={inputRef}
           placeholder="example.com"
           className="!pl-1"
-          value={currentUrl}
-          onChange={(e) => {
-            setCurrentUrl(e.target.value);
-          }}
+          value={url}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <InputGroupAddon>
           <InputGroupText>https://</InputGroupText>
         </InputGroupAddon>
       </InputGroup>
 
-      <div className="flex flex-col items-center gap-y-1">
-        <BadgeCheck
-          size={20}
-          className="text-slate-400 hover:text-slate-300 cursor-pointer"
-          onClick={() => {
-            if (currentUrl.trim()) {
-              editor.dispatchCommand(
-                TOGGLE_LINK_COMMAND,
-                sanitizeUrl(currentUrl.trim())
-              );
-            }
-            setLinkBoxCoordinates(null);
-            setCurrentUrl("");
-          }}
-        />
-        <Trash
-          size={20}
-          className="text-red-300 hover:text-red-200 cursor-pointer"
-          onClick={() => {
-            setLinkBoxCoordinates(null);
-            setCurrentUrl("");
-          }}
-        />
+      <div className="flex items-center justify-between">
+        <button
+          onClick={onCancel}
+          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors"
+        >
+          <X size={14} />
+          <span>Cancel</span>
+        </button>
+        <button
+          onClick={onSave}
+          disabled={!url.trim()}
+          className="flex items-center gap-x-1 px-3 py-1.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-500"
+        >
+          <BadgeCheck size={14} />
+          <span>Save</span>
+        </button>
       </div>
     </div>
   );

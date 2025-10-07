@@ -6,7 +6,7 @@ import {
 } from "lexical";
 import { useEffect, useRef, useState } from "react";
 import { TOGGLE_LINK_COMMAND } from "@lexical/link";
-import { sanitizeUrl } from "../../utils/url";
+import { sanitizeUrl, ensureUrlProtocol } from "../../utils/url";
 import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./command";
 import {
   getNearestLinkAncestor,
@@ -100,7 +100,9 @@ export const FloatingLink = () => {
   // Handler functions for LinkViewMode
   const handleOpenLink = () => {
     if (currentUrl) {
-      window.open(sanitizeUrl(currentUrl), "_blank", "noopener,noreferrer");
+      const sanitized = sanitizeUrl(currentUrl);
+      const urlWithProtocol = ensureUrlProtocol(sanitized);
+      window.open(urlWithProtocol, "_blank", "noopener,noreferrer");
     }
   };
 

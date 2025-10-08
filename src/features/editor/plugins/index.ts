@@ -3,3 +3,4 @@ export * from "./LinkPlugin";
 export * from "./DraggableBlockPlugin";
 export * from "./FloatingLinkPlugin";
 export * from "./AutoFocusPlugin";
+export * from "./CodeHighlightPlugin";

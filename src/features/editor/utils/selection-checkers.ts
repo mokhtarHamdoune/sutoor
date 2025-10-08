@@ -7,6 +7,7 @@ import {
 import { $isHeadingNode } from "@lexical/rich-text";
 import { $isListNode } from "@lexical/list";
 import { $isLinkNode } from "@lexical/link";
+import { $isCodeNode } from "@lexical/code";
 
 type TextFormat = {
   bold: boolean;
@@ -33,13 +34,17 @@ interface HeadingElement {
   tag: TextLevel;
 }
 
-type EditorElement = HeadingElement | ListElement | ParagraphElement;
+interface CodeElement {
+  type: "code";
+}
+
+type EditorElement = HeadingElement | ListElement | ParagraphElement | CodeElement;
 
 export type SelectionState = {
   format: TextFormat;
   alignment: TextAlignment;
   textColor: string; // optional, for future use
-  element: ParagraphElement | ListElement | HeadingElement | null;
+  element: ParagraphElement | ListElement | HeadingElement | CodeElement | null;
   isLinkActive: boolean;
   linkUrl: string | null; // Add the actual link URL
 };
@@ -111,6 +116,8 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
     if (listType === "bullet" || listType === "number") {
       return { type: "list", listType: listType };
     }
+  } else if ($isCodeNode(elementNode)) {
+    return { type: "code" };
   } else {
     return { type: "paragraph" };
   }

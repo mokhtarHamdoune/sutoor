@@ -9,6 +9,7 @@ import {
   FloatingLink,
   FloatingToolbarPlugin,
   LinkPlugin,
+  CodeHighlightPlugin,
 } from "./plugins";
 import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -45,6 +46,7 @@ export default function Editor() {
         <LinkPlugin hasLinkAttributes={true} />
         <FloatingLink />
         <AutoFocusPlugin />
+        <CodeHighlightPlugin />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

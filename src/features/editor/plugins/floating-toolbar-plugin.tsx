@@ -41,6 +41,8 @@ import {
 import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./FloatingLinkPlugin/command";
 import { getSelectionCoordinates } from "../utils/selection-checkers";
+import { $createCodeNode } from "@lexical/code";
+import { Code } from "lucide-react";
 
 export const FloatingToolbarPlugin: React.FC = memo(() => {
   const [editor] = useLexicalComposerContext();
@@ -178,9 +180,13 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
     // TODO: we should make the value as type to help with types
     const textLevel: DropdownTool = {
       id: "text-level",
-      label: "Text Level",
+      label: "Block Type",
       type: "dropdown",
       items: [
+        {
+          label: "Paragraph",
+          value: "paragraph",
+        },
         {
           label: "Heading 1",
           value: "h1",
@@ -194,19 +200,24 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           value: "h3",
         },
         {
-          label: "Text",
-          value: "paragraph",
+          label: "Code Block",
+          value: "code",
+          icon: <Code size={16} />,
         },
       ],
       value:
         selectionState.element?.type === "heading"
           ? selectionState.element.tag
+          : selectionState.element?.type === "code"
+          ? "code"
           : "paragraph",
       execute: (value) => {
         editor.update(() => {
           const selection = $getSelection();
           if (value === "paragraph") {
             $setBlocksType(selection, () => $createParagraphNode());
+          } else if (value === "code") {
+            $setBlocksType(selection, () => $createCodeNode());
           } else {
             $setBlocksType(selection, () =>
               $createHeadingNode(value as HeadingTagType)
@@ -229,6 +240,7 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
         });
       },
     };
+
     // TODO:  dispatch and isactive for list tools
     const listGroupTools: ToggleGroupTools = {
       id: "list",
@@ -324,6 +336,11 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
     selectionState.isLinkActive,
     selectionState.linkUrl,
   ]);
+  //   export const formatCode = (editor: LexicalEditor, blockType: string) => {
+  //   if (blockType !== 'code') {
+  //
+  //   }
+  // };
 
   return (
     <FloatingToolbar>

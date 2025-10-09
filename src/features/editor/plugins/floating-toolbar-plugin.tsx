@@ -214,10 +214,15 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
       execute: (value) => {
         editor.update(() => {
           const selection = $getSelection();
+          if (!selection) {
+            return;
+          }
+
           if (value === "paragraph") {
             $setBlocksType(selection, () => $createParagraphNode());
           } else if (value === "code") {
-            $setBlocksType(selection, () => $createCodeNode());
+            // Create code block with JavaScript as default language for testing
+            $setBlocksType(selection, () => $createCodeNode("javascript"));
           } else {
             $setBlocksType(selection, () =>
               $createHeadingNode(value as HeadingTagType)

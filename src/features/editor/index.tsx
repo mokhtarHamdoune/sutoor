@@ -11,6 +11,7 @@ import {
   LinkPlugin,
   CodeHighlightPlugin,
   DraggableBlockPlugin,
+  CodeBlockActionsPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -48,6 +49,7 @@ export default function Editor() {
         <FloatingLink />
         <AutoFocusPlugin />
         <CodeHighlightPlugin />
+        <CodeBlockActionsPlugin />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

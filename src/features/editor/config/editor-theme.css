@@ -207,3 +207,104 @@ check list style
     color: var(--muted-foreground);
     text-decoration-color: var(--muted-foreground);
 }
+
+/* Code Block Styles */
+.editor-code {
+    background-color: #f5f5f5;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    display: block;
+    padding: 16px;
+    line-height: 1.5;
+    font-size: 14px;
+    margin: 8px 0;
+    tab-size: 2;
+    overflow-x: auto;
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+/* Code Syntax Highlighting Tokens */
+.editor-token-comment {
+    color: #6a737d;
+    font-style: italic;
+}
+
+.editor-token-punctuation {
+    color: #24292e;
+}
+
+.editor-token-property {
+    color: #005cc5;
+}
+
+.editor-token-selector {
+    color: #032f62;
+}
+
+.editor-token-operator {
+    color: #d73a49;
+}
+
+.editor-token-attr-name {
+    color: #6f42c1;
+}
+
+.editor-token-variable {
+    color: #e36209;
+}
+
+.editor-token-function {
+    color: #6f42c1;
+}
+
+.editor-token-keyword {
+    color: #d73a49;
+    font-weight: bold;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    .editor-code {
+        background-color: #1e1e1e;
+        border-color: #333;
+        color: #d4d4d4;
+    }
+
+    .editor-token-comment {
+        color: #6a9955;
+    }
+
+    .editor-token-punctuation {
+        color: #d4d4d4;
+    }
+
+    .editor-token-property {
+        color: #9cdcfe;
+    }
+
+    .editor-token-selector {
+        color: #ce9178;
+    }
+
+    .editor-token-operator {
+        color: #d4d4d4;
+    }
+
+    .editor-token-attr-name {
+        color: #c586c0;
+    }
+
+    .editor-token-variable {
+        color: #4fc1ff;
+    }
+
+    .editor-token-function {
+        color: #dcdcaa;
+    }
+
+    .editor-token-keyword {
+        color: #569cd6;
+        font-weight: bold;
+    }
+}

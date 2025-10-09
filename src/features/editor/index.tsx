@@ -10,8 +10,9 @@ import {
   FloatingToolbarPlugin,
   LinkPlugin,
   CodeHighlightPlugin,
+  DraggableBlockPlugin,
 } from "./plugins";
-import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
+// TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";

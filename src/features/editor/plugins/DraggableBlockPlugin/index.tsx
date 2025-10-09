@@ -20,7 +20,7 @@ function isOnMenu(element: HTMLElement): boolean {
   return !!element.closest(`.${DRAGGABLE_BLOCK_MENU_CLASSNAME}`);
 }
 
-export default function DraggableBlockPlugin({
+export function DraggableBlockPlugin({
   anchorElem = document.body,
 }: {
   anchorElem?: HTMLElement;
@@ -78,3 +78,5 @@ export default function DraggableBlockPlugin({
     />
   );
 }
+
+export default DraggableBlockPlugin;

@@ -4,6 +4,7 @@ import { HeadingNode } from "@lexical/rich-text";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
+import { ImageNode } from "../nodes";
 export const editorConfig: InitialConfigType = {
   namespace: "sutoor-editor",
   theme: editorTheme,
@@ -15,5 +16,6 @@ export const editorConfig: InitialConfigType = {
     LinkNode,
     CodeNode,
     CodeHighlightNode,
+    ImageNode,
   ],
 };

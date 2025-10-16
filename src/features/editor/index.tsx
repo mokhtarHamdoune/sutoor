@@ -6,18 +6,20 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ContentEditable from "./components/content-editable";
 import {
   AutoFocusPlugin,
-  FloatingLink,
-  FloatingToolbarPlugin,
-  LinkPlugin,
+  CodeBlockActionsPlugin,
   CodeHighlightPlugin,
   DraggableBlockPlugin,
-  CodeBlockActionsPlugin,
+  FloatingLink,
+  FloatingToolbarPlugin,
+  ImagesPlugin,
+  LinkPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
+import InsertImageButton from "./plugins/ImagesPlugin/insert-image-button";
 
 export default function Editor() {
   // These refs are required by the DraggableBlockPlugin
@@ -50,6 +52,8 @@ export default function Editor() {
         <AutoFocusPlugin />
         <CodeHighlightPlugin />
         <CodeBlockActionsPlugin />
+        <ImagesPlugin />
+        <InsertImageButton />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

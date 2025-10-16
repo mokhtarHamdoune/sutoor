@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { InsertImagePayload } from "./index";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
+import { FolderOpen, CirclePlus, Link } from "lucide-react";
 
 interface InsertImagePopoverProps {
   position: { top: number; left: number };
@@ -14,9 +16,7 @@ const InsertImagePopover = ({
   onInsert,
   onClose,
 }: InsertImagePopoverProps) => {
-  const [mode, setMode] = useState<"url" | "file" | null>(null);
   const [url, setUrl] = useState("");
-  const [altText, setAltText] = useState("");
   const popoverRef = useRef<HTMLDivElement>(null);
 
   // Handle click outside to close popover
@@ -57,7 +57,7 @@ const InsertImagePopover = ({
     if (url.trim()) {
       onInsert({
         src: url,
-        altText: altText || "Image",
+        altText: "image",
       });
     }
   };
@@ -70,13 +70,15 @@ const InsertImagePopover = ({
         if (typeof reader.result === "string") {
           onInsert({
             src: reader.result,
-            altText: altText || file.name,
+            altText: file.name,
           });
         }
       };
       reader.readAsDataURL(file);
     }
   };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div
@@ -87,68 +89,61 @@ const InsertImagePopover = ({
         left: `${position.left + window.scrollX}px`,
       }}
     >
-      {!mode ? (
-        <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-sm mb-2">Insert Image</h3>
-          <Button variant="outline" size="sm" onClick={() => setMode("url")}>
-            From URL
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setMode("file")}>
-            From File
-          </Button>
-        </div>
-      ) : mode === "url" ? (
-        <div className="flex flex-col gap-3">
-          <h3 className="font-semibold text-sm">Insert from URL</h3>
-          <Input
-            placeholder="Image URL"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && url.trim()) {
-                handleUrlSubmit();
-              }
-            }}
-          />
-          <Input
-            placeholder="Alt text (optional)"
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && url.trim()) {
-                handleUrlSubmit();
-              }
-            }}
-          />
-          <div className="flex gap-2">
-            <Button size="sm" onClick={handleUrlSubmit} disabled={!url.trim()}>
-              Insert
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setMode(null)}>
-              Back
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-3">
-          <h3 className="font-semibold text-sm">Upload from File</h3>
-          <Input
+      <Tabs defaultValue="upload">
+        <TabsList className="w-full">
+          <TabsTrigger value="upload">
+            <FolderOpen />
+            Computer
+          </TabsTrigger>
+          <TabsTrigger value="url">
+            <Link />
+            URL
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="upload" className="p-3">
+          <input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             onChange={handleFileUpload}
-            autoFocus
+            className="hidden"
           />
-          <Input
-            placeholder="Alt text (optional)"
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
-          />
-          <Button size="sm" variant="outline" onClick={() => setMode(null)}>
-            Back
+          <Button
+            size="sm"
+            className="w-full cursor-pointer"
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <CirclePlus />
+            Choose Image
           </Button>
-        </div>
-      )}
+        </TabsContent>
+        <TabsContent value="url">
+          <div className="flex flex-col gap-2">
+            <Input
+              placeholder="Image URL"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && url.trim()) {
+                  handleUrlSubmit();
+                }
+              }}
+            />
+            <Button
+              size="sm"
+              className="w-full cursor-pointer"
+              variant="outline"
+              onClick={handleUrlSubmit}
+              disabled={!url.trim()}
+            >
+              <CirclePlus />
+              Insert Image
+            </Button>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

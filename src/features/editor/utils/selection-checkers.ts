@@ -14,6 +14,7 @@ type TextFormat = {
   italic: boolean;
   underline: boolean;
   strikethrough: boolean;
+  code: boolean;
 };
 
 type TextAlignment = "left" | "center" | "right" | "justify";
@@ -38,7 +39,11 @@ interface CodeElement {
   type: "code";
 }
 
-type EditorElement = HeadingElement | ListElement | ParagraphElement | CodeElement;
+type EditorElement =
+  | HeadingElement
+  | ListElement
+  | ParagraphElement
+  | CodeElement;
 
 export type SelectionState = {
   format: TextFormat;
@@ -55,6 +60,7 @@ export const DEFAULT_SELECTION_STATE: SelectionState = {
     italic: false,
     underline: false,
     strikethrough: false,
+    code: false,
   },
   alignment: "left",
   textColor: "#000000",
@@ -69,6 +75,7 @@ const getTextFormat = (selection: RangeSelection): TextFormat => {
     italic: selection.hasFormat("italic"),
     underline: selection.hasFormat("underline"),
     strikethrough: selection.hasFormat("strikethrough"),
+    code: selection.hasFormat("code"),
   };
 };
 

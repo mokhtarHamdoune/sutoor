@@ -6,6 +6,7 @@ export const editorTheme: EditorThemeClasses = {
     strikethrough: "editor-text-strikethrough",
     underline: "editor-text-underline",
     underlineStrikethrough: "editor-text-underlineStrikethrough",
+    code: "editor-text-code",
   },
   heading: {
     h1: "editor-text-h1",

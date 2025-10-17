@@ -28,6 +28,7 @@ import {
   ListOrdered,
   List,
   Link,
+  Code,
 } from "lucide-react";
 import {
   handleSelectionUpdate,
@@ -42,7 +43,6 @@ import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { SHOW_FLOATING_LINK_INPUT_COMMAND } from "./FloatingLinkPlugin/command";
 import { getSelectionCoordinates } from "../utils/selection-checkers";
 import { $createCodeNode } from "@lexical/code";
-import { Code } from "lucide-react";
 
 export const FloatingToolbarPlugin: React.FC = memo(() => {
   const [editor] = useLexicalComposerContext();
@@ -174,6 +174,16 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
           },
           isActive: selectionState.format.strikethrough,
+        },
+        {
+          id: "code",
+          label: "Code",
+          icon: <Code />,
+          type: "toggle",
+          execute: () => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
+          },
+          isActive: selectionState.format.code,
         },
       ],
     };

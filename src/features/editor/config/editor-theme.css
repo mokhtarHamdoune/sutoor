@@ -29,6 +29,16 @@
     text-decoration: underline line-through;
 }
 
+.editor-text-code {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    background-color: #f7f7f7;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    color: #EB5757;
+}
+
+
 .editor-text-h1 {
     font-size: 2em;
     font-weight: bold;

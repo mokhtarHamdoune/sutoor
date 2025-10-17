@@ -250,16 +250,14 @@ export default function ImageComponent({
 
         {/* Caption input - shows below image */}
         {!isLoadError && (
-          <div className="mt-2">
-            <input
-              type="text"
-              value={caption}
-              onChange={(e) => onCaptionChange(e.target.value)}
-              placeholder="Add a caption..."
-              className="w-full px-2 py-1 text-sm text-gray-600 border-none outline-none focus:outline-none placeholder-gray-400"
-              disabled={!isEditable}
-            />
-          </div>
+          <input
+            type="text"
+            value={caption}
+            onChange={(e) => onCaptionChange(e.target.value)}
+            placeholder="Add a caption..."
+            className="w-full px-2 py-1 text-sm text-center text-gray-600 border-none outline-none focus:outline-none placeholder-gray-400"
+            disabled={!isEditable}
+          />
         )}
 
         {/* Resize handles - only show when selected */}

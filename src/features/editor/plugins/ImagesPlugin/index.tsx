@@ -27,15 +27,6 @@
  *    - Positioned above the current line
  *    - Calls onInsert when user submits
  *
- * 4. insert-image-button.tsx: Temporary trigger button
- *    - Dispatches SHOW_INSERT_IMAGE_DIALOG_COMMAND
- *    - Will be replaced with toolbar integration later
- *
- * @example
- * // Add these to your editor:
- * // <ImagesPlugin />
- * // <InsertImageListener />
- * // <InsertImageButton /> (temporary)
  */
 
 import type { JSX } from "react";
@@ -92,15 +83,6 @@ export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
 export const SHOW_INSERT_IMAGE_DIALOG_COMMAND: LexicalCommand<null> =
   createCommand("SHOW_INSERT_IMAGE_DIALOG_COMMAND");
 
-// DONE: the modal/popover should showes up above the cursor in the editor
-// DONE: Impliment the Wrapper of the dialog that allow the user to choose between file/url
-// TODO: Impliment the UI that allow the user to import image file from the computer
-// TODO: Impliment the UI that allow the user to inlude image using a url
-// TODO: If every things work fine refactore the UI and Utils from the plugin logic
-// TODO: Check the IA generated documentation
-
-// FIXME: The resizer does not work and borders for resizing is not shown
-
 export function ImagesPlugin({
   captionsEnabled,
 }: {
@@ -156,8 +138,16 @@ export function ImagesPlugin({
 
 const TRANSPARENT_IMAGE =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-const img = document.createElement("img");
-img.src = TRANSPARENT_IMAGE;
+
+// Lazy initialize img element only in browser
+let img: HTMLImageElement | null = null;
+function getTransparentImage(): HTMLImageElement {
+  if (!img && typeof document !== "undefined") {
+    img = document.createElement("img");
+    img.src = TRANSPARENT_IMAGE;
+  }
+  return img!;
+}
 
 function $onDragStart(event: DragEvent): boolean {
   const node = $getImageNodeInSelection();
@@ -169,7 +159,7 @@ function $onDragStart(event: DragEvent): boolean {
     return false;
   }
   dataTransfer.setData("text/plain", "_");
-  dataTransfer.setDragImage(img, 0, 0);
+  dataTransfer.setDragImage(getTransparentImage(), 0, 0);
   dataTransfer.setData(
     "application/x-lexical-drag",
     JSON.stringify({

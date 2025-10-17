@@ -19,7 +19,6 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
-import InsertImageButton from "./plugins/ImagesPlugin/insert-image-button";
 
 export default function Editor() {
   // These refs are required by the DraggableBlockPlugin
@@ -53,7 +52,6 @@ export default function Editor() {
         <CodeHighlightPlugin />
         <CodeBlockActionsPlugin />
         <ImagesPlugin />
-        <InsertImageButton />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

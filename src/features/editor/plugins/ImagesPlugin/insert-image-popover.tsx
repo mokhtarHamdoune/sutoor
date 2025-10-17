@@ -83,10 +83,13 @@ const InsertImagePopover = ({
   return (
     <div
       ref={popoverRef}
-      className="fixed z-[1000] w-80 bg-white rounded-lg border border-gray-200 shadow-lg p-4"
+      className="fixed z-[1000] w-100 bg-white rounded-lg border border-gray-200 shadow-lg p-4"
       style={{
-        top: `${position.top + window.scrollY - 10}px`,
-        left: `${position.left + window.scrollX}px`,
+        // Position above the cursor line with 8px gap
+        top: `${
+          position.top - (popoverRef.current?.offsetHeight || 150) - 4
+        }px`,
+        left: `${position.left}px`,
       }}
     >
       <Tabs defaultValue="upload">

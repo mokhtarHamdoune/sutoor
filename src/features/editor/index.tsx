@@ -37,7 +37,7 @@ export default function Editor() {
         <FloatingToolbarPlugin />
         <RichTextPlugin
           contentEditable={
-            <div className="relative h-96" ref={onRef}>
+            <div className="relative h-full" ref={onRef}>
               <ContentEditable placeholder="Write your thoughts here." />
             </div>
           }

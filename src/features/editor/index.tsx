@@ -13,6 +13,7 @@ import {
   FloatingToolbarPlugin,
   ImagesPlugin,
   LinkPlugin,
+  CommandPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -52,6 +53,7 @@ export default function Editor() {
         <CodeHighlightPlugin />
         <CodeBlockActionsPlugin />
         <ImagesPlugin />
+        <CommandPlugin />
       </LexicalComposer>
     </ToolbarUIProvider>
   );

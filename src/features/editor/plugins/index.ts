@@ -6,3 +6,4 @@ export * from "./AutoFocusPlugin";
 export * from "./CodeHighlightPlugin";
 export * from "./CodeBlockActionsPlugin";
 export * from "./ImagesPlugin";
+export * from "./CommandPlugin";

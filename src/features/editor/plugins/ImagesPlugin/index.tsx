@@ -74,6 +74,8 @@ import {
   ImagePayload,
 } from "../../nodes/ImageNode";
 import InsertImageListener from "./insert-image-listener";
+import { useCommandRegistry } from "../../hooks";
+import { ImageIcon } from "lucide-react";
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -89,6 +91,24 @@ export function ImagesPlugin({
   captionsEnabled?: boolean;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
+
+  const { registerCommand } = useCommandRegistry();
+
+  useEffect(() => {
+    // ✅ Register image command
+    const cleanup = registerCommand({
+      id: "insert-image",
+      label: "Image",
+      keywords: ["/image", "/img", "/picture"],
+      icon: <ImageIcon />,
+      category: "media",
+      execute: (editor) => {
+        editor.dispatchCommand(SHOW_INSERT_IMAGE_DIALOG_COMMAND, null);
+      },
+    });
+
+    return cleanup; // Cleanup when plugin unmounts
+  }, [registerCommand]);
 
   useEffect(() => {
     if (!editor.hasNodes([ImageNode])) {

@@ -1,31 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 
 import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Settings,
-  Smile,
-  User,
-} from "lucide-react";
-
-import {
   Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
+  CommandItem,
 } from "@/shared/ui/command";
+import { type CommandItem as CommandItemType } from "../../contexts/command-context";
+import { LexicalEditor } from "lexical";
 
 type CommandPanelProps = {
   position: { top: number; left: number };
+  commands: CommandItemType[];
   onClose: () => void;
+  editor: LexicalEditor;
 };
 // TODO: document the header of this file
-const CommandPanel = ({ position, onClose }: CommandPanelProps) => {
+const CommandPanel = ({
+  position,
+  onClose,
+  commands,
+  editor,
+}: CommandPanelProps) => {
   const commandPanelRef = useRef<HTMLDivElement>(null);
   const commandInputRef = useRef<HTMLInputElement>(null);
   const [commandPanelHeight, setCommandHeight] = useState(0);
@@ -56,7 +53,7 @@ const CommandPanel = ({ position, onClose }: CommandPanelProps) => {
     setTimeout(() => {
       setCommandHeight(commandPanelRef.current?.offsetHeight || 0);
       commandInputRef.current?.focus();
-    }, 200); // Log position every 2 seconds
+    }, 50); // Log position every 2 seconds
   }, []);
 
   useEffect(() => {
@@ -84,38 +81,23 @@ const CommandPanel = ({ position, onClose }: CommandPanelProps) => {
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
-              <Calendar />
-              <span>Calendar</span>
+          {commands.map((command) => (
+            <CommandItem
+              key={command.id}
+              // onClick={() => {
+              //   command.execute(editor);
+              //   onClose();
+              // }}
+              onSelect={() => {
+                command.execute(editor);
+                onClose();
+              }}
+              className="cursor-pointer"
+            >
+              {command.icon && <span>{command.icon}</span>}
+              {command.label}
             </CommandItem>
-            <CommandItem>
-              <Smile />
-              <span>Search Emoji</span>
-            </CommandItem>
-            <CommandItem disabled>
-              <Calculator />
-              <span>Calculator</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Settings">
-            <CommandItem>
-              <User />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
+          ))}
         </CommandList>
       </Command>
     </div>

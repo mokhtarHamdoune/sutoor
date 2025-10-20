@@ -20,6 +20,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
+import { CommandProvider } from "./contexts/command-context";
 
 export default function Editor() {
   // These refs are required by the DraggableBlockPlugin
@@ -32,29 +33,31 @@ export default function Editor() {
   };
 
   return (
-    <ToolbarUIProvider>
-      <LexicalComposer initialConfig={editorConfig}>
-        <FloatingToolbarPlugin />
-        <RichTextPlugin
-          contentEditable={
-            <div className="relative h-full" ref={onRef}>
-              <ContentEditable placeholder="Write your thoughts here." />
-            </div>
-          }
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        {floatingAnchorElem && (
-          <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-        )}
-        <ListPlugin hasStrictIndent />
-        <LinkPlugin hasLinkAttributes={true} />
-        <FloatingLink />
-        <AutoFocusPlugin />
-        <CodeHighlightPlugin />
-        <CodeBlockActionsPlugin />
-        <ImagesPlugin />
-        <CommandPlugin />
-      </LexicalComposer>
-    </ToolbarUIProvider>
+    <CommandProvider>
+      <ToolbarUIProvider>
+        <LexicalComposer initialConfig={editorConfig}>
+          <FloatingToolbarPlugin />
+          <RichTextPlugin
+            contentEditable={
+              <div className="relative h-full" ref={onRef}>
+                <ContentEditable placeholder="Write your thoughts here." />
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          {floatingAnchorElem && (
+            <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+          )}
+          <ListPlugin hasStrictIndent />
+          <LinkPlugin hasLinkAttributes={true} />
+          <FloatingLink />
+          <AutoFocusPlugin />
+          <CodeHighlightPlugin />
+          <CodeBlockActionsPlugin />
+          <ImagesPlugin />
+          <CommandPlugin />
+        </LexicalComposer>
+      </ToolbarUIProvider>
+    </CommandProvider>
   );
 }

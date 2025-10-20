@@ -1,16 +1,16 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection, $isRangeSelection } from "lexical";
-import { useEffect, useState } from "react";
+import { $createTextNode, $getSelection, $isRangeSelection } from "lexical";
+import { useCallback, useEffect, useState } from "react";
 import CommandPanel from "./command-panel";
 import { useCommandRegistry } from "../../hooks";
 
 // TODO:  Document the header of this file
-// TODO:  Add Command close when the user delete all the text,
-// TODO:  Add command close when the user remove the /
-// TODO:  Add Command close on Escape key press
+// DONE:  Add Command close when the user delete all the text, This impossible because the popover will be focused so typing will be withing the popover
+// DONE:  Add command close when the user remove the /
+// DONE:  Add Command close on Escape key press
 // DONE:  Add the registry pattern discuss with claud
 // DONE:  Add image block command as example
-// TODO: when the command panels goes the / cammand also otherwise it will apeare again
+// DONE: when the command panels goes the / cammand also otherwise it will apeare again
 /// because the fact that the update listener will detect the / again and popover will show again
 
 export const CommandPlugin = () => {
@@ -54,6 +54,24 @@ export const CommandPlugin = () => {
     });
   }, [editor, panelPosition]);
 
+  const onClosePanel = useCallback(() => {
+    setPanelPosition(null);
+    // we remove the / from the editor
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const text = anchorNode.getTextContent();
+        const slashIndex = text.search(/\s+\//);
+        const newText =
+          text.substring(0, slashIndex) +
+          text.substring(slashIndex).replace("/", "");
+        const newTextNode = $createTextNode(newText);
+        anchorNode.replace(newTextNode);
+      }
+    });
+  }, [editor]);
+
   if (!panelPosition) {
     return null;
   }
@@ -61,7 +79,7 @@ export const CommandPlugin = () => {
   return (
     <CommandPanel
       position={panelPosition}
-      onClose={() => setPanelPosition(null)}
+      onClose={onClosePanel}
       commands={commands}
       editor={editor}
     />

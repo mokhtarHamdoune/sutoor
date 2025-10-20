@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Command,
@@ -7,16 +7,40 @@ import {
   CommandList,
   CommandItem,
 } from "@/shared/ui/command";
-import { type CommandItem as CommandItemType } from "../../contexts/command-context";
+import { type CommandItem as RegisteredCommand } from "../../contexts/command-context";
 import { LexicalEditor } from "lexical";
 
+/**
+ * CommandPanel
+ *
+ * A floating command palette UI that displays available editor commands.
+ * Positioned absolutely above the current cursor line and supports:
+ * - Keyboard navigation and selection
+ * - Click outside to close
+ * - Escape key to dismiss
+ * - Auto-focus on mount
+ *
+ * The panel uses a visibility technique where it renders hidden initially,
+ * measures its height, then positions itself above the cursor with the correct offset.
+ */
+
+// Layout constants
+const PANEL_Z_INDEX = 1000; // Z-index to ensure panel appears above editor content
+const PANEL_GAP = 4; // Gap in pixels between panel and cursor line
+const CLICK_OUTSIDE_DELAY = 100; // Delay before enabling click-outside to prevent immediate close
+const MOUNT_DELAY = 50; // Delay for measuring panel height and focusing input
+
 type CommandPanelProps = {
+  /** Absolute position where the panel should appear */
   position: { top: number; left: number };
-  commands: CommandItemType[];
+  /** List of registered commands to display */
+  commands: RegisteredCommand[];
+  /** Callback when panel should be closed */
   onClose: () => void;
+  /** Lexical editor instance for executing commands */
   editor: LexicalEditor;
 };
-// TODO: document the header of this file
+
 const CommandPanel = ({
   position,
   onClose,
@@ -41,7 +65,7 @@ const CommandPanel = ({
     // Add event listener with a small delay to avoid immediate close
     const timeoutId = setTimeout(() => {
       document.addEventListener("mousedown", handleClickOutside);
-    }, 100);
+    }, CLICK_OUTSIDE_DELAY);
 
     return () => {
       clearTimeout(timeoutId);
@@ -49,7 +73,7 @@ const CommandPanel = ({
     };
   }, [onClose]);
 
-  // Handle escape key to close panel
+  // Register escape key handler
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -66,31 +90,47 @@ const CommandPanel = ({
     };
   }, [onClose]);
 
+  /**
+   * On mount: measure panel height and focus input.
+   * Height is needed to position the panel above the cursor line.
+   * Uses a small delay to ensure the panel has fully rendered.
+   */
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setCommandHeight(commandPanelRef.current?.offsetHeight || 0);
-      commandInputRef.current?.focus();
-    }, 50); // Log position every 2 seconds
+    }, MOUNT_DELAY);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
+  /** After the command panel popped up and there is a height
+   * Focus the command input for immediate typing
+   */
   useEffect(() => {
     if (commandPanelHeight > 0) {
       commandInputRef.current?.focus();
     }
   }, [commandPanelHeight]);
 
+  /**
+   * Calculate inline styles for panel positioning.
+   * Panel is positioned above the cursor with proper gap and visibility control.
+   */
+  const panelStyle = useMemo(
+    () => ({
+      zIndex: PANEL_Z_INDEX,
+      position: "absolute" as const,
+      visibility: commandPanelHeight
+        ? ("visible" as const)
+        : ("hidden" as const),
+      top: `${position.top - commandPanelHeight - PANEL_GAP}px`,
+      left: `${position.left}px`,
+    }),
+    [commandPanelHeight, position]
+  );
+
   return (
-    <div
-      ref={commandPanelRef}
-      style={{
-        // Position above the cursor line with 8px gap
-        zIndex: 1000,
-        position: "absolute",
-        visibility: commandPanelHeight ? "visible" : "hidden",
-        top: `${position.top - commandPanelHeight - 4}px`,
-        left: `${position.left}px`,
-      }}
-    >
+    <div ref={commandPanelRef} style={panelStyle}>
       <Command className="rounded-lg border shadow-md md:min-w-[450px]">
         <CommandInput
           ref={commandInputRef}
@@ -101,10 +141,6 @@ const CommandPanel = ({
           {commands.map((command) => (
             <CommandItem
               key={command.id}
-              // onClick={() => {
-              //   command.execute(editor);
-              //   onClose();
-              // }}
               onSelect={() => {
                 command.execute(editor);
                 onClose();

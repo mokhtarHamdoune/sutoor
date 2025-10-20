@@ -1,17 +1,26 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $createTextNode, $getSelection, $isRangeSelection } from "lexical";
-import { useCallback, useEffect, useState } from "react";
+import { $createTextNode, $getSelection, $isRangeSelection, LexicalNode } from "lexical";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import CommandPanel from "./command-panel";
 import { useCommandRegistry } from "../../hooks";
 
-// TODO:  Document the header of this file
-// DONE:  Add Command close when the user delete all the text, This impossible because the popover will be focused so typing will be withing the popover
-// DONE:  Add command close when the user remove the /
-// DONE:  Add Command close on Escape key press
-// DONE:  Add the registry pattern discuss with claud
-// DONE:  Add image block command as example
-// DONE: when the command panels goes the / cammand also otherwise it will apeare again
-/// because the fact that the update listener will detect the / again and popover will show again
+/**
+ * CommandPlugin
+ *
+ * Detects when a user types "/" (slash) character in the editor and displays
+ * a command panel with registered commands. The panel appears when "/" is typed
+ * at the beginning of a line or after a space.
+ *
+ * Features:
+ * - Automatic detection of "/" trigger character
+ * - Positioning of command panel above the current line
+ * - Cleanup of "/" character when panel is closed
+ * - Integration with command registry system
+ */
+
+// Regex patterns for detecting slash command triggers
+const SLASH_AT_START = /^\//; // Matches "/" at the beginning of text
+const SLASH_AFTER_SPACE = /\s+\//; // Matches "/" preceded by whitespace
 
 export const CommandPlugin = () => {
   const [editor] = useLexicalComposerContext();
@@ -22,6 +31,32 @@ export const CommandPlugin = () => {
 
   const { commands } = useCommandRegistry();
 
+  // Memoize regex test function to avoid recreating on each render
+  const shouldShowPanel = useMemo(
+    () => (text: string) =>
+      SLASH_AT_START.test(text) || SLASH_AFTER_SPACE.test(text),
+    []
+  );
+
+  /**
+   * Calculate and set the position for the command panel based on the current cursor position
+   */
+  const calculatePanelPosition = useCallback(
+    (anchorNode: LexicalNode) => {
+      const element = anchorNode.getTopLevelElementOrThrow();
+      const domElement = editor.getElementByKey(element.getKey());
+
+      if (domElement) {
+        const rect = domElement.getBoundingClientRect();
+        setPanelPosition({
+          top: rect.top,
+          left: rect.left,
+        });
+      }
+    },
+    [editor]
+  );
+
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
@@ -31,41 +66,50 @@ export const CommandPlugin = () => {
           const anchorNode = selection.anchor.getNode();
           const text = anchorNode.getTextContent();
 
-          // Command open if  "/" is at the begining of the element
-          // OR after a space
-          if (text.startsWith("/") || /\s+\//.test(text)) {
+          // Show panel if "/" is detected and panel is not already visible
+          if (shouldShowPanel(text)) {
             if (!panelPosition) {
-              const element = anchorNode.getTopLevelElementOrThrow();
-
-              // Get the DOM element for positioning
-              const domElement = editor.getElementByKey(element.getKey());
-              if (domElement) {
-                const rect = domElement.getBoundingClientRect();
-                // Position popover above the current line
-                setPanelPosition({
-                  top: rect.top,
-                  left: rect.left,
-                });
-              }
+              calculatePanelPosition(anchorNode);
             }
           }
         }
       });
     });
-  }, [editor, panelPosition]);
+  }, [editor, panelPosition, shouldShowPanel, calculatePanelPosition]);
 
+  /**
+   * Closes the command panel and removes the "/" trigger character from the editor.
+   *
+   * Handles two cases:
+   * 1. "/" at the start: "/text" -> "text"
+   * 2. "/" after space: "hello /text" -> "hello text"
+   */
   const onClosePanel = useCallback(() => {
     setPanelPosition(null);
-    // we remove the / from the editor
+
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
         const anchorNode = selection.anchor.getNode();
         const text = anchorNode.getTextContent();
-        const slashIndex = text.search(/\s+\//);
-        const newText =
-          text.substring(0, slashIndex) +
-          text.substring(slashIndex).replace("/", "");
+
+        let newText = text;
+
+        // Check if slash is after a space
+        if (SLASH_AFTER_SPACE.test(text)) {
+          const slashIndex = text.search(SLASH_AFTER_SPACE);
+          // Remove the "/" that comes after the space
+          newText =
+            text.substring(0, slashIndex) +
+            text.substring(slashIndex).replace("/", "");
+        }
+        // Check if slash is at the start
+        else if (SLASH_AT_START.test(text)) {
+          // Remove the leading "/"
+          newText = text.substring(1);
+        }
+
+        // Replace the text node with the cleaned version
         const newTextNode = $createTextNode(newText);
         anchorNode.replace(newTextNode);
       }

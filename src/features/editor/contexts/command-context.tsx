@@ -1,6 +1,7 @@
 // CommandPlugin/command-context.tsx
 import { createContext, useState, useCallback } from "react";
 import { LexicalEditor } from "lexical";
+import { DEFAULT_COMMANDS } from "../config/default-commands";
 
 export interface CommandItem {
   id: string;
@@ -24,7 +25,8 @@ export const CommandProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [commands, setCommands] = useState<CommandItem[]>([]);
+  // Initialize with default Lexical commands
+  const [commands, setCommands] = useState<CommandItem[]>(DEFAULT_COMMANDS);
 
   const registerCommand = useCallback((command: CommandItem) => {
     setCommands((prev) => {

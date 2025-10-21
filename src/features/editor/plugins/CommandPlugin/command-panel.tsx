@@ -131,7 +131,7 @@ const CommandPanel = ({
 
   return (
     <div ref={commandPanelRef} style={panelStyle}>
-      <Command className="rounded-lg border shadow-md md:min-w-[450px]">
+      <Command className="rounded-lg border shadow-md md:min-w-[300px]">
         <CommandInput
           ref={commandInputRef}
           placeholder="Type a command or search..."

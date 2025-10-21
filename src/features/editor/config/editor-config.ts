@@ -1,6 +1,6 @@
 import { InitialConfigType } from "@lexical/react/LexicalComposer";
 import { editorTheme } from "./editor-theme";
-import { HeadingNode } from "@lexical/rich-text";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
@@ -11,6 +11,7 @@ export const editorConfig: InitialConfigType = {
   onError: (error) => console.log(error),
   nodes: [
     HeadingNode,
+    QuoteNode,
     ListNode,
     ListItemNode,
     LinkNode,

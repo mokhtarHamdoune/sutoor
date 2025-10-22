@@ -21,13 +21,22 @@
  * ```
  */
 
-import { $isCodeNode, CodeNode } from "@lexical/code";
+import { $createCodeNode, $isCodeNode, CodeNode } from "@lexical/code";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection, $isRangeSelection } from "lexical";
+import {
+  $addUpdateTag,
+  $getSelection,
+  $isRangeSelection,
+  SKIP_SELECTION_FOCUS_TAG,
+} from "lexical";
+
+import { $setBlocksType } from "@lexical/selection";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CodeActionMenu } from "./code-action-menu";
 import { DEFAULT_CODE_LANGUAGE } from "./languages";
+import { useCommandRegistry } from "../../hooks";
+import { Code } from "lucide-react";
 
 /**
  * Helper function to get the current code node from selection.
@@ -55,6 +64,29 @@ export const CodeBlockActionsPlugin = () => {
   const [currentLanguage, setCurrentLanguage] = useState<string>(
     DEFAULT_CODE_LANGUAGE
   );
+  const { registerCommand } = useCommandRegistry();
+
+  useEffect(() => {
+    // ✅ Register image command
+    const cleanup = registerCommand({
+      id: "code-block-command",
+      label: "Code Block",
+      description: "Change block to a code block",
+      keywords: ["code block", "/code block", "code", "/code"],
+      icon: <Code />,
+      category: "basic",
+      execute(editor) {
+        editor.update(() => {
+          $addUpdateTag(SKIP_SELECTION_FOCUS_TAG);
+          const selection = $getSelection();
+          // Create code block with JavaScript as default language for testing
+          $setBlocksType(selection, () => $createCodeNode("javascript"));
+        });
+      },
+    });
+
+    return cleanup; // Cleanup when plugin unmounts
+  }, [registerCommand]);
 
   /**
    * Monitor editor updates to detect when cursor enters/exits code blocks.

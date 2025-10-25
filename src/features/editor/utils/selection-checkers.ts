@@ -4,7 +4,7 @@ import {
   RangeSelection,
   type LexicalNode,
 } from "lexical";
-import { $isHeadingNode } from "@lexical/rich-text";
+import { $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
 import { $isListNode } from "@lexical/list";
 import { $isLinkNode } from "@lexical/link";
 import { $isCodeNode } from "@lexical/code";
@@ -39,17 +39,22 @@ interface CodeElement {
   type: "code";
 }
 
+interface QuoteElement {
+  type: "quote";
+}
+
 type EditorElement =
   | HeadingElement
   | ListElement
   | ParagraphElement
+  | QuoteElement
   | CodeElement;
 
 export type SelectionState = {
   format: TextFormat;
   alignment: TextAlignment;
   textColor: string; // optional, for future use
-  element: ParagraphElement | ListElement | HeadingElement | CodeElement | null;
+  element: EditorElement | null;
   isLinkActive: boolean;
   linkUrl: string | null; // Add the actual link URL
 };
@@ -117,6 +122,7 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
   const firstNode = nodes[0];
   const elementNode = firstNode.getTopLevelElement();
   if ($isHeadingNode(elementNode)) {
+    console.log("Heading tag:", elementNode.getTag());
     return { type: "heading", tag: elementNode.getTag() as TextLevel };
   } else if ($isListNode(elementNode)) {
     const listType = elementNode.getListType();
@@ -125,6 +131,9 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
     }
   } else if ($isCodeNode(elementNode)) {
     return { type: "code" };
+  } else if ($isQuoteNode(elementNode)) {
+    console.log("this is a quote");
+    return { type: "quote" };
   } else {
     return { type: "paragraph" };
   }

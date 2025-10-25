@@ -14,7 +14,11 @@ import {
   $getSelection,
   $createParagraphNode,
 } from "lexical";
-import { $createHeadingNode, type HeadingTagType } from "@lexical/rich-text";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  type HeadingTagType,
+} from "@lexical/rich-text";
 import { $setBlocksType, $patchStyleText } from "@lexical/selection";
 import {
   Bold,
@@ -212,7 +216,10 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
         {
           label: "Code Block",
           value: "code",
-          icon: <Code size={16} />,
+        },
+        {
+          label: "Quote",
+          value: "quote",
         },
       ],
       value:
@@ -220,6 +227,8 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           ? selectionState.element.tag
           : selectionState.element?.type === "code"
           ? "code"
+          : selectionState.element?.type === "quote"
+          ? "quote"
           : "paragraph",
       execute: (value) => {
         editor.update(() => {
@@ -233,6 +242,8 @@ export const FloatingToolbarPlugin: React.FC = memo(() => {
           } else if (value === "code") {
             // Create code block with JavaScript as default language for testing
             $setBlocksType(selection, () => $createCodeNode("javascript"));
+          } else if (value === "quote") {
+            $setBlocksType(selection, () => $createQuoteNode());
           } else {
             $setBlocksType(selection, () =>
               $createHeadingNode(value as HeadingTagType)

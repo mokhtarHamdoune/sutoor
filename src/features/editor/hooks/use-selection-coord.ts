@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection, $isRangeSelection } from "lexical";
+import { $getSelection, $isRangeSelection, RangeSelection } from "lexical";
 import { useEffect, useState } from "react";
 /**
  * Calculates the coordinates for positioning the toolbar menu.
@@ -12,7 +12,14 @@ import { useEffect, useState } from "react";
  * - A vertical offset of 10 pixels above the selection.
  *
  */
-export const useSelectionCoord = () => {
+
+type SelectionConfig = {
+  countCollapseAsSelection: boolean;
+};
+
+export const useSelectionCoord = (
+  config: SelectionConfig = { countCollapseAsSelection: false }
+) => {
   const [coordinates, setCoordinates] = useState<{
     top: number;
     left: number;
@@ -21,15 +28,21 @@ export const useSelectionCoord = () => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    const getCoordinates = () => {
-      const domSelection = document.getSelection();
+    const getCoordinates = (selection: RangeSelection) => {
+      // const domSelection = document.getSelection();
+      const anchor = selection.anchor;
+      const anchorNode = anchor.getNode();
+      const element = anchorNode.getTopLevelElementOrThrow();
+
+      // Get the DOM element for positioning
+      const domElement = editor.getElementByKey(element.getKey());
       // If there's no DOM selection, clear coordinates to hide toolbar
-      if (!domSelection || domSelection?.rangeCount === 0) {
+      if (!domElement) {
         setCoordinates(null);
         return;
       }
-      const range = domSelection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
+
+      const rect = domElement.getBoundingClientRect();
       // When tracking is disabled, keep previous coordinates stable (no movement)
       setCoordinates({
         top: Math.floor(rect.top),
@@ -39,20 +52,26 @@ export const useSelectionCoord = () => {
     const unregister = editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const selection = $getSelection();
-        if (!$isRangeSelection(selection) || selection.isCollapsed()) {
+        if (!$isRangeSelection(selection)) {
           // Always clear coordinates on invalid selection so the toolbar hides,
           // regardless of tracking state
           setCoordinates(null);
           return;
         }
-        getCoordinates();
+
+        if (selection.isCollapsed() && !config.countCollapseAsSelection) {
+          setCoordinates(null);
+          return;
+        }
+
+        getCoordinates(selection);
       });
     });
 
     return () => {
       unregister();
     };
-  }, [editor]);
+  }, [editor, config.countCollapseAsSelection]);
 
   return {
     coordinates,

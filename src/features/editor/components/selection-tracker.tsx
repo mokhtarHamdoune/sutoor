@@ -1,24 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import useSelectionCoord from "../hooks/use-selection-coord";
 
 export const SelectionTracker = ({
   children,
-  allowTracking: isTrackingAllowd,
 }: {
   children: React.ReactNode;
-  allowTracking: boolean;
 }) => {
-  const { coordinates, allowTracking, disableTracking } = useSelectionCoord();
+  const { coordinates } = useSelectionCoord();
 
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isTrackingAllowd) {
-      allowTracking();
-    } else {
-      disableTracking();
-    }
-  }, [isTrackingAllowd, disableTracking, allowTracking]);
 
   return (
     <div

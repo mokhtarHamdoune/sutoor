@@ -1,6 +1,6 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getSelection, $isRangeSelection } from "lexical";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 /**
  * Calculates the coordinates for positioning the toolbar menu.
  * The menu is positioned centered above the selected text (cursor).
@@ -17,7 +17,6 @@ export const useSelectionCoord = () => {
     top: number;
     left: number;
   } | null>(null);
-  const allowTrack = useRef<boolean>(true);
 
   const [editor] = useLexicalComposerContext();
 
@@ -32,7 +31,6 @@ export const useSelectionCoord = () => {
       const range = domSelection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
       // When tracking is disabled, keep previous coordinates stable (no movement)
-      if (!allowTrack.current) return;
       setCoordinates({
         top: Math.floor(rect.top),
         left: Math.floor(rect.left),
@@ -56,17 +54,8 @@ export const useSelectionCoord = () => {
     };
   }, [editor]);
 
-  const allowTracking = () => {
-    allowTrack.current = true;
-  };
-  const disableTracking = () => {
-    allowTrack.current = false;
-  };
-
   return {
     coordinates,
-    allowTracking,
-    disableTracking,
   };
 };
 

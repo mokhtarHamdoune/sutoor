@@ -7,3 +7,5 @@ export * from "./CodeHighlightPlugin";
 export * from "./CodeBlockActionsPlugin";
 export * from "./ImagesPlugin";
 export * from "./CommandPlugin";
+export * from "./AutoEmbedPlugin";
+export * from "./YouTubePlugin";

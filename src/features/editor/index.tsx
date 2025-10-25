@@ -14,6 +14,7 @@ import {
   ImagesPlugin,
   LinkPlugin,
   CommandPlugin,
+  AutoEmbedPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -21,6 +22,7 @@ import { useState } from "react";
 import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
 import { CommandProvider } from "./contexts/command-context";
+import YouTubePlugin from "./plugins/YouTubePlugin";
 
 export default function Editor() {
   // These refs are required by the DraggableBlockPlugin
@@ -56,6 +58,8 @@ export default function Editor() {
           <CodeBlockActionsPlugin />
           <ImagesPlugin />
           <CommandPlugin />
+          <AutoEmbedPlugin />
+          <YouTubePlugin />
         </LexicalComposer>
       </ToolbarUIProvider>
     </CommandProvider>

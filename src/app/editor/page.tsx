@@ -1,4 +1,4 @@
-import Editor from "@/features/editor";
+import Editor from "@/client/features/editor";
 
 export default function TextEditor() {
   return (

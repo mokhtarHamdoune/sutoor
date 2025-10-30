@@ -8,18 +8,57 @@ Sutoor is a lightweight web application for writing and publishing personal blog
 - Ship a small, modular codebase where each feature (editor, blogs, profile, navigation) lives in its own boundary.
 - Prototype advanced editor features (floating toolbar, selection tracking, plugins) that can evolve into a rich content platform.
 
-## Project structure (high level)
+## Project Structure
 
-Top-level folders and what they contain:
+This project follows a **layered architecture** with clear separation between frontend and backend concerns, making it easy to maintain and scale.
 
-- `src/app` — Next.js application entry (routes, layout, global CSS).
-- `src/features` — Feature boundaries. Each feature has its own folder and encapsulates UI, hooks, components and plugins.
-- `src/shared` — shared UI primitives and utilities used across features (`ui/`, `lib/utils.ts`).
+```
+src/
+├── app/                          # Next.js App Router
+│   ├── (web)/                    # Frontend pages and routes
+│   └── api/                      # API endpoints (thin layer)
+│
+├── client/                       # Frontend layer
+│   ├── features/                 # Domain-specific UI features
+│   │   ├── blogs/                # Blog listing, cards, etc.
+│   │   ├── editor/               # Rich text editor
+│   │   └── profile/              # User profile UI
+│   └── shared/                   # Shared client-side code
+│       ├── hooks/                # Custom React hooks
+│       └── components/           # Reusable UI components
+│
+├── server/                       # Backend layer (services & data access)
+│   ├── features/                 # Domain-specific business logic
+│   │   ├── blogs/
+│   │   │   ├── blogs.service.ts      # Business logic
+│   │   │   ├── blogs.repository.ts   # Data access
+│   │   │   └── blogs.types.ts        # Backend types
+│   │   └── users/
+│   └── common/                   # Server utilities
+│       ├── db.ts                 # Database connection
+│       └── middleware/           # Custom middleware
+│
+├── shared/                       # Shared between client & server
+│   └── types/                    # Type definitions, DTOs, contracts
+│
+└── db/                           # Database layer
+    ├── migrations/               # Database migrations
+    └── schema.prisma             # Database schema definition
+```
 
-Files of interest at repo root:
+### Architecture Principles
 
-- `package.json` — scripts and dependencies.
-- `next.config.ts`, `tsconfig.json`, `eslint.config.mjs` — project config.
+- **Separation of Concerns**: Frontend (`client/`) and backend (`server/`) are clearly separated, making it easy to extract backend to a dedicated server in the future if needed.
+- **Feature-Based Organization**: Related code is grouped by domain (blogs, editor, users) rather than by technical layer.
+- **Repository Pattern**: Data access logic is isolated in repository files, keeping services clean and testable.
+- **API as Contract**: The `app/api/` folder acts as a thin HTTP layer that delegates to server services.
+
+### Key Files
+
+- `package.json` — Scripts and dependencies
+- `next.config.ts` — Next.js configuration
+- `tsconfig.json` — TypeScript configuration
+- `eslint.config.mjs` — ESLint rules
 
 ## How to run (local development)
 

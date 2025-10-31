@@ -10,12 +10,18 @@
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:dev:stop": "docker-compose -f docker-compose.dev.yml down",
     "docker:prod": "docker-compose up --build",
-    "docker:prod:stop": "docker-compose down"
+    "docker:prod:stop": "docker-compose down",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:makemigration": "prisma migrate dev --create-only",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@lexical/code": "^0.36.2",
     "@lexical/react": "^0.36.2",
+    "@prisma/client": "^6.18.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-navigation-menu": "^1.2.14",

@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String    @id @default(uuid())
+    email     String    @unique
+    username  String
+    lastName  String
+    firstName String
+    posts     Post[]
+    bio       String?
+    image     String?
+    role      Role      @default(USER)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    Comment   Comment[]
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+model Post {
+    id          String     @id @default(uuid())
+    title       String
+    slug        String     @unique
+    content     Json
+    status      PostStatus @default(DRAFT)
+    publishedAt DateTime?
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    author      User       @relation(fields: [authorId], references: [id])
+    authorId    String
+    categories  Category[]
+    tags        Tag[]
+    Comment     Comment[]
+    Media       Media[]
+}
+
+enum PostStatus {
+    DRAFT
+    PUBLISHED
+    ARCHIVED
+}
+
+model Category {
+    id             String     @id @default(uuid())
+    label          String     @unique
+    slug           String     @unique
+    descpription   String?
+    color          String?
+    image          String?
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+    posts          Post[]
+    parentId       String?
+    parent         Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
+    sub_categories Category[] @relation("CategorySubcategories")
+}
+
+model Tag {
+    id        String   @id @default(uuid())
+    name      String
+    slug      String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    posts     Post[]
+}
+
+model Comment {
+    id        Int       @id @default(autoincrement())
+    content   String
+    isEdited  Boolean   @default(false)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    post      Post      @relation(fields: [postId], references: [id])
+    postId    String
+    author    User      @relation(fields: [authorId], references: [id])
+    authorId  String
+    parentId  Int?
+    parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+    replies   Comment[] @relation("CommentReplies")
+    Media     Media[]
+}
+
+model Media {
+    id        Int      @id @default(autoincrement())
+    url       String
+    type      String
+    filename  String
+    fileSize  Int
+    createdAt DateTime @default(now())
+    postId    String?
+    post      Post?    @relation(fields: [postId], references: [id])
+    commentId Int?
+    comment   Comment? @relation(fields: [commentId], references: [id])
+}

@@ -9,3 +9,4 @@ export * from "./ImagesPlugin";
 export * from "./CommandPlugin";
 export * from "./AutoEmbedPlugin";
 export * from "./YouTubePlugin";
+export * from "./OnChangePlugin";

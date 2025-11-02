@@ -23,8 +23,16 @@ import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
 import { CommandProvider } from "./contexts/command-context";
 import YouTubePlugin from "./plugins/YouTubePlugin";
+import OnChangePlugin, {
+  type EditorContent,
+} from "./plugins/OnChangePlugin";
+import type { EditorState } from "lexical";
 
-export default function Editor() {
+type EditorProps = {
+  onChange?: (content: EditorContent, editorState: EditorState) => void;
+};
+
+export default function Editor({ onChange }: EditorProps) {
   // These refs are required by the DraggableBlockPlugin
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
@@ -38,6 +46,7 @@ export default function Editor() {
     <CommandProvider>
       <ToolbarUIProvider>
         <LexicalComposer initialConfig={editorConfig}>
+          <OnChangePlugin onChange={onChange} />
           <FloatingToolbarPlugin />
           <RichTextPlugin
             contentEditable={

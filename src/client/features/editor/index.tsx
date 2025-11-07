@@ -23,9 +23,7 @@ import "./config/editor-theme.css";
 import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
 import { CommandProvider } from "./contexts/command-context";
 import YouTubePlugin from "./plugins/YouTubePlugin";
-import OnChangePlugin, {
-  type EditorContent,
-} from "./plugins/OnChangePlugin";
+import OnChangePlugin, { type EditorContent } from "./plugins/OnChangePlugin";
 import type { EditorState } from "lexical";
 
 type EditorProps = {
@@ -51,7 +49,7 @@ export default function Editor({ onChange }: EditorProps) {
           <RichTextPlugin
             contentEditable={
               <div className="relative h-full" ref={onRef}>
-                <ContentEditable placeholder="Write your thoughts here." />
+                <ContentEditable placeholder="Share your story, ideas, or updates — start writing here." />
               </div>
             }
             ErrorBoundary={LexicalErrorBoundary}

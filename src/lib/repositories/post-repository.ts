@@ -38,9 +38,20 @@ class PostRepository implements BaseRepository<Post> {
   async getById(id: string): Promise<Post | null> {
     throw new Error("Method not implemented.");
   }
-  // eslint-disable-next-line
-  async getBy(filter: Partial<Post>): Promise<Post[]> {
-    throw new Error("Method not implemented.");
+
+  async getBy(filter: Partial<Omit<Post, "content">>): Promise<Post[]> {
+    return await prisma.post
+      .findMany({
+        where: {
+          ...filter,
+        },
+      })
+      .then((posts) =>
+        posts.map((post) => ({
+          ...post,
+          content: post.content as JsonValue,
+        }))
+      );
   }
   // eslint-disable-next-line
   async update(id: string, item: Partial<Post>): Promise<Post> {
@@ -49,6 +60,16 @@ class PostRepository implements BaseRepository<Post> {
   // eslint-disable-next-line
   async delete(id: string): Promise<void> {
     throw new Error("Method not implemented.");
+  }
+
+  async getBySlug(slug: string): Promise<Post | null> {
+    const post = await prisma.post.findUnique({
+      where: { slug },
+    });
+    if (!post) {
+      return null;
+    }
+    return { ...post, content: post.content as JsonValue };
   }
 }
 

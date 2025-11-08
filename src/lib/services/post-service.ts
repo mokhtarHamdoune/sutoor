@@ -29,6 +29,20 @@ export class PostService {
     });
   }
 
+  // TODO: add pagination
+  /**
+   *  Get Post list by filters
+   * @returns
+   */
+  async getBy(filters: Partial<Omit<Post, "content">>): Promise<Post[]> {
+    return this.postRepo.getBy(filters);
+  }
+
+  async getBySlug(slug: string): Promise<Post | null> {
+    const post = await this.postRepo.getBySlug(slug);
+    return post;
+  }
+
   /**
    * Publish a draft post
    * Business logic: Only drafts can be published, sets publishedAt date
@@ -121,4 +135,8 @@ export class PostService {
   }
 }
 
-export default PostService;
+// Singleton instance
+export const postService = new PostService();
+
+// Default export for convenience and tests
+export default postService;

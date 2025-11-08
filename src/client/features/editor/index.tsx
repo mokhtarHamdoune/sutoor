@@ -28,9 +28,17 @@ import type { EditorState } from "lexical";
 
 type EditorProps = {
   onChange?: (content: EditorContent, editorState: EditorState) => void;
+  initContent?: string;
+  editable?: boolean;
 };
 
-export default function Editor({ onChange }: EditorProps) {
+export type EditorContentType = EditorContent;
+
+export default function Editor({
+  onChange,
+  initContent,
+  editable = true,
+}: EditorProps) {
   // These refs are required by the DraggableBlockPlugin
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
@@ -43,7 +51,13 @@ export default function Editor({ onChange }: EditorProps) {
   return (
     <CommandProvider>
       <ToolbarUIProvider>
-        <LexicalComposer initialConfig={editorConfig}>
+        <LexicalComposer
+          initialConfig={{
+            ...editorConfig,
+            editable: editable,
+            editorState: initContent,
+          }}
+        >
           <OnChangePlugin onChange={onChange} />
           <FloatingToolbarPlugin />
           <RichTextPlugin

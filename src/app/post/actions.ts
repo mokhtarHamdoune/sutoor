@@ -15,4 +15,13 @@ const saveEditorContent = async (title: string, content: string) => {
   redirect("/");
 };
 
-export { saveEditorContent };
+const updateDraftContent = async (
+  post_id: string,
+  title: string,
+  content: string
+) => {
+  await postService.updateDraft(post_id, { title, content });
+  redirect("/");
+};
+
+export { saveEditorContent, updateDraftContent };

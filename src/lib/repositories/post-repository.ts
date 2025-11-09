@@ -34,9 +34,17 @@ class PostRepository implements BaseRepository<Post> {
     });
     return { ...post, content: post.content as JsonValue };
   }
-  // eslint-disable-next-line
+
   async getById(id: string): Promise<Post | null> {
-    throw new Error("Method not implemented.");
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+    
+    if (!post) {
+      return null;
+    }
+    
+    return { ...post, content: post.content as JsonValue };
   }
 
   async getBy(filter: Partial<Omit<Post, "content">>): Promise<Post[]> {
@@ -53,13 +61,32 @@ class PostRepository implements BaseRepository<Post> {
         }))
       );
   }
-  // eslint-disable-next-line
+
   async update(id: string, item: Partial<Post>): Promise<Post> {
-    throw new Error("Method not implemented.");
+    const updateData: Record<string, unknown> = { ...item };
+    
+    // Handle content type conversion if present
+    if (item.content !== undefined) {
+      updateData.content = item.content as PrismaJsonValue;
+    }
+    
+    // If title is being updated, regenerate the slug
+    if (item.title) {
+      updateData.slug = generateSlug(item.title);
+    }
+
+    const post = await prisma.post.update({
+      where: { id },
+      data: updateData,
+    });
+    
+    return { ...post, content: post.content as JsonValue };
   }
-  // eslint-disable-next-line
+
   async delete(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    await prisma.post.delete({
+      where: { id },
+    });
   }
 
   async getBySlug(slug: string): Promise<Post | null> {

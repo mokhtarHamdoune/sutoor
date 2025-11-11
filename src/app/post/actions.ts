@@ -24,4 +24,9 @@ const updateDraftContent = async (
   redirect("/");
 };
 
-export { saveEditorContent, updateDraftContent };
+const deleteDraftPost = async (post_id: string) => {
+  await postService.deleteDraft(post_id);
+  redirect("/");
+};
+
+export { saveEditorContent, updateDraftContent, deleteDraftPost };

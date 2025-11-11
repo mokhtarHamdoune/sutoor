@@ -4,7 +4,7 @@ import Editor from "@/client/features/editor";
 import type { EditorContent } from "@/client/features/editor/plugins/OnChangePlugin";
 import { Button } from "@/client/shared/ui/button";
 import { Input } from "@/client/shared/ui/input";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 
@@ -14,14 +14,17 @@ interface PostEditorProps {
     slug: string;
     title: string;
     content: string; // JSON string from Lexical
+    status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   };
   onSave: (title: string, content: string) => Promise<{ slug: string }>;
+  onDelete?: (id: string) => Promise<void>;
   cancelHref: string;
 }
 
 export default function PostEditor({
   post,
   onSave,
+  onDelete,
   cancelHref,
 }: PostEditorProps) {
   const [isPending, startTransition] = useTransition();
@@ -52,10 +55,17 @@ export default function PostEditor({
             Cancel
           </Button>
         </Link>
-        <Button onClick={handleSave} disabled={isPending || !title.trim()}>
-          <Save />
-          {isPending ? "Saving..." : post ? "Update" : "Publish"}
-        </Button>
+        <div className="flex items-center gap-x-2">
+          {post?.status === "DRAFT" && (
+            <Button variant={"outline"} onClick={() => onDelete?.(post.id)}>
+              <Trash className="text-destructive" /> Delete
+            </Button>
+          )}
+          <Button onClick={handleSave} disabled={isPending || !title.trim()}>
+            <Save />
+            {isPending ? "Saving..." : post ? "Update" : "Save"}
+          </Button>
+        </div>
       </div>
 
       <Input

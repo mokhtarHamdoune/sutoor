@@ -1,26 +1,35 @@
 import { Button } from "@/client/shared/ui/button";
 import { postService } from "@/lib/services";
 import Link from "next/link";
+import PostCard from "@/client/components/post-card";
 
 export default async function Home() {
   const posts = await postService.getBy({});
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="w-9/12">
-        <div className="flex ">
-          <Link href="/post/new">
-            <Button>Create New Post</Button>
-          </Link>
-        </div>
-        <ul>
+    <main className="w-9/12 m-auto">
+      <div className="flex ">
+        <Link href="/post/new">
+          <Button>Create New Post</Button>
+        </Link>
+      </div>
+      <div>
+        <ul className="grid grid-cols-4 gap-4 mt-4">
           {posts.map((post) => (
             <li key={post.id} className="hover:text-blue-300">
-              <Link href={`/post/${post.slug}`}>{post.title}</Link>
+              <Link href={`/post/${post.slug}`}>
+                <PostCard
+                  title={post.title}
+                  content={
+                    "This is just content to fill the body of the card it usually does not take much."
+                  }
+                  imageUrl=""
+                />
+              </Link>
             </li>
           ))}
         </ul>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

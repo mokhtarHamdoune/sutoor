@@ -15,12 +15,14 @@ export default async function Home() {
         </Link>
       </div>
       <div>
-        <MostRecentPost
-          id={posts[0].id}
-          title={posts[0].title}
-          summary="This is summary of the latest blog we need somehow to generate summary of the blog"
-          imageUrl=""
-        />
+        {posts.length > 0 && (
+          <MostRecentPost
+            id={posts[0].id}
+            title={posts[0].title}
+            summary="This is summary of the latest blog we need somehow to generate summary of the blog"
+            imageUrl={posts[0].coverImage || ""}
+          />
+        )}
         <ul className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {posts.map((post) => (
             <li key={post.id} className="hover:text-blue-300">
@@ -30,7 +32,7 @@ export default async function Home() {
                   content={
                     "This is just content to fill the body of the card it usually does not take much."
                   }
-                  imageUrl=""
+                  imageUrl={post.coverImage || ""}
                 />
               </Link>
             </li>

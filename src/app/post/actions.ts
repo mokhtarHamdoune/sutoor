@@ -10,17 +10,18 @@ const postService = new PostService();
  * Save editor content as a draft post
  * The service handles: getting user, setting status, etc.
  */
-const saveEditorContent = async (title: string, content: string) => {
-  await postService.createDraft(title, content);
+const saveEditorContent = async (title: string, content: string, coverImage?: string) => {
+  await postService.createDraft(title, content, coverImage);
   redirect("/");
 };
 
 const updateDraftContent = async (
   post_id: string,
   title: string,
-  content: string
+  content: string,
+  coverImage?: string
 ) => {
-  await postService.updateDraft(post_id, { title, content });
+  await postService.updateDraft(post_id, { title, content, coverImage });
   redirect("/");
 };
 

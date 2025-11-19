@@ -19,6 +19,7 @@ async function EditPostPage({ params }: { params: Promise<{ slug: string }> }) {
         title: post.title,
         content: String(post.content),
         status: post.status,
+        coverImage: post.coverImage,
       }}
       onSave={updateDraftContent.bind(null, post.id)}
       onDelete={deleteDraftPost.bind(null, post.id)}

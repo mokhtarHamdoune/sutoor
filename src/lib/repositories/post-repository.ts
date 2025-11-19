@@ -11,6 +11,7 @@ export type Post = {
   content: JsonValue; // Editor JSON content
   slug: string;
   authorId: string;
+  coverImage: string | null;
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   publishedAt: Date | null;
   createdAt: Date;

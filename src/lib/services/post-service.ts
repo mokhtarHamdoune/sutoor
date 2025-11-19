@@ -12,7 +12,7 @@ export class PostService {
    * Create a new draft post
    * Business logic: Sets status to DRAFT, publishedAt to null, gets current user
    */
-  async createDraft(title: string, content: JsonValue): Promise<Post> {
+  async createDraft(title: string, content: JsonValue, coverImage?: string): Promise<Post> {
     // Get the mock user (first user in database)
     const user = await this.userRepo.getById("mock-id");
 
@@ -26,6 +26,7 @@ export class PostService {
       authorId: user.id,
       status: "DRAFT",
       publishedAt: null,
+      coverImage: coverImage || null,
     });
   }
 
@@ -94,7 +95,7 @@ export class PostService {
    */
   async updateDraft(
     postId: string,
-    updates: { title?: string; content?: JsonValue }
+    updates: { title?: string; content?: JsonValue; coverImage?: string }
   ): Promise<Post> {
     const post = await this.postRepo.getById(postId);
 

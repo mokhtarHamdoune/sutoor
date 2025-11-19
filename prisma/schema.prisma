@@ -35,6 +35,7 @@ model Post {
     title       String
     slug        String     @unique
     content     Json
+    coverImage  String?
     status      PostStatus @default(DRAFT)
     publishedAt DateTime?
     createdAt   DateTime   @default(now())

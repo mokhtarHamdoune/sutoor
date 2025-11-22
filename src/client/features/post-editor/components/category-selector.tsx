@@ -9,20 +9,31 @@ import {
 } from "@/client/shared/ui/select";
 import { Label } from "@/client/shared/ui/label";
 
-export function CategorySelector() {
+type CategorySelectorProps = {
+  categories?: string[];
+  selectedCategory?: string;
+  onCategoryChange?: (category: string) => void;
+};
+
+export function CategorySelector(props: CategorySelectorProps) {
   return (
     <div className="space-y-2">
       <Label className="text-xs font-medium text-slate-500 uppercase">
         Category
       </Label>
-      <Select>
+      <Select
+        onValueChange={props.onCategoryChange}
+        value={props.selectedCategory}
+      >
         <SelectTrigger className="w-full bg-white">
           <SelectValue placeholder="Select category..." />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="tech">Technology</SelectItem>
-          <SelectItem value="life">Lifestyle</SelectItem>
-          <SelectItem value="coding">Coding</SelectItem>
+          {props.categories?.map((category) => (
+            <SelectItem key={category} value={category}>
+              {category}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>

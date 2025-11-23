@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/client/shared/ui/select";
 import { Label } from "@/client/shared/ui/label";
+import { CreateCategoryDialog } from "./create-category-form";
 
 type CategorySelectorProps = {
   categories?: string[];
@@ -18,9 +19,16 @@ type CategorySelectorProps = {
 export function CategorySelector(props: CategorySelectorProps) {
   return (
     <div className="space-y-2">
-      <Label className="text-xs font-medium text-slate-500 uppercase">
-        Category
-      </Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-xs font-medium text-slate-500 uppercase">
+          Category
+        </Label>
+        <CreateCategoryDialog
+          onSuccess={(newCategory) => {
+            props.onCategoryChange?.(newCategory);
+          }}
+        />
+      </div>
       <Select
         onValueChange={props.onCategoryChange}
         value={props.selectedCategory}

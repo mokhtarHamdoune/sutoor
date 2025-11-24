@@ -1,7 +1,7 @@
 import { prisma } from "@/db";
 import BaseRepository from "./base-repository";
 import { generateSlug } from "../utils";
-import { InputJsonValue as PrismaJsonValue } from "@prisma/client/runtime/library";
+import { InputJsonValue as PrismaJsonValue } from "@prisma/client/runtime/client.js";
 import { JsonValue } from "../shared/types";
 
 // Full Post type with all DB fields
@@ -16,6 +16,7 @@ export type Post = {
   publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  categories?: Array<{ id: string; label: string; slug: string }>;
 };
 
 // Input type for creating a post - omits DB-generated fields
@@ -25,12 +26,26 @@ export type CreatePostInput = Omit<
 >;
 
 class PostRepository implements BaseRepository<Post> {
-  async save(input: CreatePostInput): Promise<Post> {
+  async save(input: CreatePostInput & { categoryId?: string }): Promise<Post> {
     const post = await prisma.post.create({
       data: {
-        ...input,
-        content: input.content as PrismaJsonValue, // Cast to satisfy Prisma's JsonValue type
+        title: input.title,
+        content: input.content as PrismaJsonValue,
         slug: generateSlug(input.title),
+        authorId: input.authorId,
+        status: input.status,
+        publishedAt: input.publishedAt,
+        coverImage: input.coverImage,
+        ...(input.categoryId && {
+          categories: {
+            connect: { id: input.categoryId },
+          },
+        }),
+      },
+      include: {
+        categories: {
+          select: { id: true, label: true, slug: true },
+        },
       },
     });
     return { ...post, content: post.content as JsonValue };
@@ -40,11 +55,11 @@ class PostRepository implements BaseRepository<Post> {
     const post = await prisma.post.findUnique({
       where: { id },
     });
-    
+
     if (!post) {
       return null;
     }
-    
+
     return { ...post, content: post.content as JsonValue };
   }
 
@@ -63,24 +78,53 @@ class PostRepository implements BaseRepository<Post> {
       );
   }
 
-  async update(id: string, item: Partial<Post>): Promise<Post> {
-    const updateData: Record<string, unknown> = { ...item };
-    
+  async update(
+    id: string,
+    item: Partial<Post> & { categoryId?: string }
+  ): Promise<Post> {
+    const updateData: Record<string, unknown> = {};
+
     // Handle content type conversion if present
     if (item.content !== undefined) {
       updateData.content = item.content as PrismaJsonValue;
     }
-    
+
     // If title is being updated, regenerate the slug
     if (item.title) {
       updateData.slug = generateSlug(item.title);
+      updateData.title = item.title;
+    }
+
+    // Handle other fields
+    if (item.status) updateData.status = item.status;
+    if (item.publishedAt !== undefined)
+      updateData.publishedAt = item.publishedAt;
+    if (item.coverImage !== undefined) updateData.coverImage = item.coverImage;
+
+    // Handle category connection
+    if (item.categoryId !== undefined) {
+      if (item.categoryId) {
+        // Connect new category (will replace existing)
+        updateData.categories = {
+          set: [], // Disconnect all
+          connect: { id: item.categoryId }, // Connect new one
+        };
+      } else {
+        // Disconnect all categories
+        updateData.categories = { set: [] };
+      }
     }
 
     const post = await prisma.post.update({
       where: { id },
       data: updateData,
+      include: {
+        categories: {
+          select: { id: true, label: true, slug: true },
+        },
+      },
     });
-    
+
     return { ...post, content: post.content as JsonValue };
   }
 
@@ -93,6 +137,11 @@ class PostRepository implements BaseRepository<Post> {
   async getBySlug(slug: string): Promise<Post | null> {
     const post = await prisma.post.findUnique({
       where: { slug },
+      include: {
+        categories: {
+          select: { id: true, label: true, slug: true },
+        },
+      },
     });
     if (!post) {
       return null;

@@ -25,15 +25,21 @@ interface PostEditorProps {
     title: string;
     content: string; // JSON string from Lexical
     coverImage?: string | null;
+    categoryId?: string | null;
     status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   };
   onSave: (
     title: string,
     content: string,
+    categoryId?: string,
     coverImage?: string
   ) => Promise<{ slug: string }>;
   onDelete?: (id: string) => Promise<void>;
   cancelHref: string;
+  categories: Array<{
+    id: string;
+    label: string;
+  }>;
 }
 
 export default function PostEditor({
@@ -41,10 +47,14 @@ export default function PostEditor({
   onSave,
   onDelete,
   cancelHref,
+  categories,
 }: PostEditorProps) {
   const [isPending, startTransition] = useTransition();
   const editorContent = useRef<EditorContent | null>(null);
   const [title, setTitle] = useState(post?.title || "");
+  const [categoryId, setCategoryId] = useState<string | undefined>(
+    post?.categoryId || undefined
+  );
   const [coverImage, setCoverImage] = useState<string | null>(
     post?.coverImage || null
   );
@@ -61,7 +71,12 @@ export default function PostEditor({
     }
 
     startTransition(async () => {
-      await onSave(title, editorContent.current!.json, coverImage || undefined);
+      await onSave(
+        title,
+        editorContent.current!.json,
+        categoryId,
+        coverImage || undefined
+      );
     });
   };
 
@@ -76,7 +91,7 @@ export default function PostEditor({
               Back
             </Button>
           </Link>
-          <div className="h-4 w-[1px] bg-slate-200"></div>
+          <div className="h-4 w-px bg-slate-200"></div>
           <span className="text-sm text-slate-500">
             {post?.status === "PUBLISHED" ? "Published" : "Draft"}
           </span>
@@ -152,7 +167,11 @@ export default function PostEditor({
                 Organization
               </h3>
               <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 space-y-6">
-                <CategorySelector />
+                <CategorySelector
+                  categories={categories}
+                  selectedCategory={categoryId}
+                  onCategoryChange={setCategoryId}
+                />
                 <TagInput />
               </div>
             </div>

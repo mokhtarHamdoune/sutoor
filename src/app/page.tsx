@@ -8,7 +8,7 @@ export default async function Home() {
   const posts = await postService.getBy({});
 
   return (
-    <main className="w-11/12  max-w-[1280px] m-auto">
+    <main className="w-11/12  max-w-7xl m-auto">
       <div className="flex ">
         <Link href="/post/new">
           <Button>Create New Post</Button>

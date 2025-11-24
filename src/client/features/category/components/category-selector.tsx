@@ -11,7 +11,7 @@ import { Label } from "@/client/shared/ui/label";
 import { CreateCategoryDialog } from "./create-category-form";
 
 type CategorySelectorProps = {
-  categories?: string[];
+  categories?: { label: string; id: string }[];
   selectedCategory?: string;
   onCategoryChange?: (category: string) => void;
 };
@@ -38,8 +38,8 @@ export function CategorySelector(props: CategorySelectorProps) {
         </SelectTrigger>
         <SelectContent>
           {props.categories?.map((category) => (
-            <SelectItem key={category} value={category}>
-              {category}
+            <SelectItem key={category.id} value={category.id}>
+              {category.label}
             </SelectItem>
           ))}
         </SelectContent>

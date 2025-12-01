@@ -16,7 +16,6 @@ export type Post = {
   publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  categories?: Array<{ id: string; label: string; slug: string }>;
 };
 
 // Input type for creating a post - omits DB-generated fields

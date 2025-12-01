@@ -14,9 +14,9 @@ import {
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { CategorySelector } from "@/client/features/category/components/category-selector";
-import { TagInput } from "./components/tag-input";
 import { Calendar } from "@/client/shared/ui/calendar";
 import { ImageDropzone } from "./components/image-dropzone";
+import Tags from "../tags";
 
 interface PostEditorProps {
   post?: {
@@ -172,7 +172,7 @@ export default function PostEditor({
                   selectedCategory={categoryId}
                   onCategoryChange={setCategoryId}
                 />
-                <TagInput />
+                <Tags />
               </div>
             </div>
           </div>

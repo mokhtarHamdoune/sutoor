@@ -6,10 +6,13 @@ import { tagsService } from "@/lib/services";
  * Fetch tags matching the search query
  */
 const searchTags = async (query: string) => {
-  console.log("Searching tags for query:", query);
   const tags = await tagsService.searchTags(query);
-  console.log("Found tags:", tags);
   return tags;
 };
 
-export { searchTags };
+const createTag = async (tag: string) => {
+  const newTag = await tagsService.createTag(tag);
+  return newTag;
+};
+
+export { searchTags, createTag };

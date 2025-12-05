@@ -16,7 +16,7 @@ export default function LexicalContentEditable({
       }
       aria-placeholder={placeholder}
       placeholder={
-        <div className="text-gray-300 absolute top-4 left-10">
+        <div className="text-gray-300 absolute top-4 left-10 pointer-events-none">
           {placeholder}
         </div>
       }

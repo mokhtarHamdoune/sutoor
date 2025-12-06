@@ -3,6 +3,7 @@ import { Button } from "@/client/shared/ui/button";
 import { Input } from "@/client/shared/ui/input";
 import { Label } from "@/client/shared/ui/label";
 import { PenLine, BookOpen, Sparkles } from "lucide-react";
+import { signIn } from "@/lib/auth";
 
 export default function RegisterForm() {
   return (
@@ -92,7 +93,14 @@ export default function RegisterForm() {
                 </svg>
                 GitHub
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={async () => {
+                  "use server";
+                  await signIn("google");
+                }}
+              >
                 <svg
                   className="mr-2 h-4 w-4"
                   aria-hidden="true"

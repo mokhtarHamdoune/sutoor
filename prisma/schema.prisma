@@ -10,19 +10,34 @@ datasource db {
     provider = "postgresql"
 }
 
-model User {
-    id        String    @id @default(uuid())
-    email     String    @unique
-    username  String
-    lastName  String
-    firstName String
-    posts     Post[]
-    bio       String?
-    image     String?
-    role      Role      @default(USER)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    Comment   Comment[]
+model Account {
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
 }
 
 enum Role {
@@ -30,22 +45,53 @@ enum Role {
     ADMIN
 }
 
+model User {
+    id            String    @id @default(uuid())
+    email         String    @unique
+    username      String
+    lastName      String    @map("last_name")
+    firstName     String    @map("first_name")
+    emailVerified DateTime? @map("email_verified")
+    posts         Post[]
+    bio           String?
+    image         String?
+    role          Role      @default(USER)
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
+    Comment       Comment[]
+    accounts      Account[]
+    sessions      Session[]
+
+    @@map("users")
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@map("verification_tokens")
+}
+
 model Post {
     id          String     @id @default(uuid())
     title       String
     slug        String     @unique
     content     Json
-    coverImage  String?
+    coverImage  String?    @map("cover_image")
     status      PostStatus @default(DRAFT)
-    publishedAt DateTime?
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime   @updatedAt
+    publishedAt DateTime?  @map("published_at")
+    createdAt   DateTime   @default(now()) @map("created_at")
+    updatedAt   DateTime   @updatedAt @map("updated_at")
     author      User       @relation(fields: [authorId], references: [id])
-    authorId    String
+    authorId    String     @map("author_id")
     categories  Category[]
     tags        Tag[]
     Comment     Comment[]
     Media       Media[]
+
+    @@map("posts")
 }
 
 enum PostStatus {
@@ -61,37 +107,43 @@ model Category {
     descpription   String?
     color          String?
     image          String?
-    createdAt      DateTime   @default(now())
-    updatedAt      DateTime   @updatedAt
+    createdAt      DateTime   @default(now()) @map("created_at")
+    updatedAt      DateTime   @updatedAt @map("updated_at")
     posts          Post[]
-    parentId       String?
+    parentId       String?    @map("parent_id")
     parent         Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
     sub_categories Category[] @relation("CategorySubcategories")
+
+    @@map("categories")
 }
 
 model Tag {
     id        String   @id @default(uuid())
     name      String
     slug      String   @unique
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
     posts     Post[]
+
+    @@map("tags")
 }
 
 model Comment {
     id        Int       @id @default(autoincrement())
     content   String
-    isEdited  Boolean   @default(false)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    isEdited  Boolean   @default(false) @map("is_edited")
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime  @updatedAt @map("updated_at")
     post      Post      @relation(fields: [postId], references: [id])
-    postId    String
+    postId    String    @map("post_id")
     author    User      @relation(fields: [authorId], references: [id])
-    authorId  String
-    parentId  Int?
+    authorId  String    @map("author_id")
+    parentId  Int?      @map("parent_id")
     parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
     replies   Comment[] @relation("CommentReplies")
     Media     Media[]
+
+    @@map("comments")
 }
 
 model Media {
@@ -99,10 +151,12 @@ model Media {
     url       String
     type      String
     filename  String
-    fileSize  Int
-    createdAt DateTime @default(now())
-    postId    String?
+    fileSize  Int      @map("file_size")
+    createdAt DateTime @default(now()) @map("created_at")
+    postId    String?  @map("post_id")
     post      Post?    @relation(fields: [postId], references: [id])
-    commentId Int?
+    commentId Int?     @map("comment_id")
     comment   Comment? @relation(fields: [commentId], references: [id])
+
+    @@map("media")
 }

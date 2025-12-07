@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import Link, { LinkProps } from "next/link";
 import { Button } from "@/client/shared/ui/button";
@@ -12,8 +10,12 @@ import {
   navigationMenuTriggerStyle,
 } from "@/client/shared/ui/navigation-menu";
 import { cn } from "@/client/shared/lib/utils";
+import { auth } from "@/lib/auth";
+import { UserMenu } from "./user-menu";
 
-export function Header() {
+export async function Header() {
+  const session = await auth();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4 md:px-8">
@@ -51,12 +53,23 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <Link href="/auth/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/post/new">Start Writing</Link>
-          </Button>
+          {session?.user ? (
+            <>
+              <Button variant="ghost" asChild className="hidden md:flex">
+                <Link href="/post/new">Start Writing</Link>
+              </Button>
+              <UserMenu user={session.user} />
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/auth/login">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/auth/register">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

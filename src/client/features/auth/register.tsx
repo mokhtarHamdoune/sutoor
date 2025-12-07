@@ -98,7 +98,7 @@ export default function RegisterForm() {
                 className="w-full"
                 onClick={async () => {
                   "use server";
-                  await signIn("google");
+                  await signIn("google", { redirectTo: "/" });
                 }}
               >
                 <svg

@@ -81,7 +81,14 @@ export default function RegisterForm() {
 
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={async () => {
+                  "use server";
+                  await signIn("github", { redirectTo: "/" });
+                }}
+              >
                 <svg
                   role="img"
                   className="mr-2 h-4 w-4"

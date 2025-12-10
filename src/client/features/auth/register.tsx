@@ -1,9 +1,29 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/client/shared/ui/button";
 import { Input } from "@/client/shared/ui/input";
 import { Label } from "@/client/shared/ui/label";
-import { PenLine, BookOpen, Sparkles } from "lucide-react";
-import { signIn } from "@/lib/auth";
+import { PenLine, BookOpen, Sparkles, Loader2 } from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { signInWithEmail, signInWithGithub, signInWithGoogle } from "./actions";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Sending magic link...
+        </>
+      ) : (
+        "Sign up with email"
+      )}
+    </Button>
+  );
+}
 
 export default function RegisterForm() {
   return (
@@ -84,10 +104,7 @@ export default function RegisterForm() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={async () => {
-                  "use server";
-                  await signIn("github", { redirectTo: "/" });
-                }}
+                onClick={() => signInWithGithub()}
               >
                 <svg
                   role="img"
@@ -103,10 +120,7 @@ export default function RegisterForm() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={async () => {
-                  "use server";
-                  await signIn("google", { redirectTo: "/" });
-                }}
+                onClick={() => signInWithGoogle()}
               >
                 <svg
                   className="mr-2 h-4 w-4"
@@ -138,41 +152,18 @@ export default function RegisterForm() {
               </div>
             </div>
 
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="first-name">First name</Label>
-                  <Input id="first-name" placeholder="John" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="last-name">Last name</Label>
-                  <Input id="last-name" placeholder="Doe" required />
-                </div>
-              </div>
+            <form action={signInWithEmail} className="space-y-4">
+              {/* <div className="space-y-2"> */}
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+              />
+              {/* </div> */}
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-
-              <Button type="submit" className="w-full">
-                Create account
-              </Button>
+              <SubmitButton />
             </form>
 
             <p className="text-center text-sm text-muted-foreground">

@@ -1,8 +1,29 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/client/shared/ui/button";
 import { Input } from "@/client/shared/ui/input";
 import { Label } from "@/client/shared/ui/label";
-import { Quote } from "lucide-react";
+import { Quote, Loader2 } from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { signInWithEmail, signInWithGithub, signInWithGoogle } from "./actions";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Sending magic link...
+        </>
+      ) : (
+        "Send magic link"
+      )}
+    </Button>
+  );
+}
 
 export default function LoginForm() {
   return (
@@ -70,7 +91,11 @@ export default function LoginForm() {
 
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => signInWithGithub()}
+              >
                 <svg
                   role="img"
                   className="mr-2 h-4 w-4"
@@ -82,7 +107,11 @@ export default function LoginForm() {
                 </svg>
                 GitHub
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => signInWithGoogle()}
+              >
                 <svg
                   className="mr-2 h-4 w-4"
                   aria-hidden="true"
@@ -113,38 +142,19 @@ export default function LoginForm() {
               </div>
             </div>
 
-            <form className="space-y-4">
+            <form action={signInWithEmail} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="you@example.com"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="#"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-
-              <Button type="submit" className="w-full">
-                Sign in
-              </Button>
+              <SubmitButton />
             </form>
 
             <p className="text-center text-sm text-muted-foreground">

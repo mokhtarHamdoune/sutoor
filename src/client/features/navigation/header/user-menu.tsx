@@ -12,6 +12,7 @@ import {
 
 interface UserMenuProps {
   user: {
+    id?: string | null;
     name?: string | null;
     email?: string | null;
     image?: string | null;
@@ -64,7 +65,7 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
           <div className="pt-3 space-y-1">
             <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link href="/profile">Profile</Link>
+              <Link href={`/profile/${user.id}`}>Profile</Link>
             </Button>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link href="/post/new">Write a Post</Link>

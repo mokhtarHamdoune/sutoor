@@ -10,25 +10,26 @@ export class PostService {
 
   /**
    * Create a new draft post
-   * Business logic: Sets status to DRAFT, publishedAt to null, gets current user
+   * Business logic: Sets status to DRAFT, publishedAt to null
    */
   async createDraft(
+    authorId: string,
     title: string,
     content: JsonValue,
     categoryId?: string,
     coverImage?: string
   ): Promise<Post> {
-    // Get the mock user (first user in database)
-    const user = await this.userRepo.getById("mock-id");
+    // Verify user exists
+    const user = await this.userRepo.getById(authorId);
 
     if (!user) {
-      throw new Error("No user found. Please create a user first.");
+      throw new Error("User not found. Please authenticate first.");
     }
 
     return this.postRepo.save({
       title,
       content,
-      authorId: user.id,
+      authorId,
       status: "DRAFT",
       publishedAt: null,
       coverImage: coverImage || null,

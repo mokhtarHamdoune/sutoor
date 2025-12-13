@@ -18,6 +18,17 @@ export type Post = {
   updatedAt: Date;
 };
 
+export type PostPreview = Pick<
+  Post,
+  | "id"
+  | "title"
+  | "slug"
+  | "coverImage"
+  | "publishedAt"
+  | "createdAt"
+  | "status"
+>;
+
 // Input type for creating a post - omits DB-generated fields
 export type CreatePostInput = Omit<
   Post,
@@ -146,6 +157,65 @@ class PostRepository implements BaseRepository<Post> {
       return null;
     }
     return { ...post, content: post.content as JsonValue };
+  }
+
+  async listAuthorPostPreviews(
+    authorId: string,
+    options?: {
+      take?: number;
+      skip?: number;
+      statuses?: Array<Post["status"]>;
+      orderBy?: "createdAt" | "publishedAt";
+      orderDirection?: "asc" | "desc";
+    }
+  ): Promise<PostPreview[]> {
+    const take = options?.take ?? 12;
+    const skip = options?.skip ?? 0;
+    const orderBy = options?.orderBy ?? "createdAt";
+    const orderDirection = options?.orderDirection ?? "desc";
+
+    return prisma.post.findMany({
+      where: {
+        authorId,
+        ...(options?.statuses?.length
+          ? {
+              status: { in: options.statuses },
+            }
+          : {}),
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        coverImage: true,
+        publishedAt: true,
+        createdAt: true,
+        status: true,
+      },
+      orderBy: {
+        [orderBy]: orderDirection,
+      },
+      take,
+      skip,
+    });
+  }
+
+  async countAuthorPosts(
+    authorId: string,
+    options?: {
+      statuses?: Array<Post["status"]>;
+    }
+  ): Promise<number> {
+    return prisma.post.count({
+      where: {
+        authorId,
+        ...(options?.statuses?.length
+          ? {
+              status: { in: options.statuses },
+            }
+          : {}),
+      },
+    });
   }
 }
 

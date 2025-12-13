@@ -20,6 +20,13 @@ export type CreateUserInput = Omit<User, "id" | "createdAt" | "updatedAt">;
 // Input type for updating a user
 export type UpdateUserInput = Partial<Pick<User, "name" | "bio" | "image">>;
 
+export type UserProfileSummary = Pick<
+  User,
+  "id" | "name" | "email" | "image" | "bio" | "role" | "createdAt"
+> & {
+  totalPosts: number;
+};
+
 class UserRepository implements BaseRepository<User> {
   async save(input: CreateUserInput): Promise<User> {
     const user = await prisma.user.create({
@@ -33,6 +40,28 @@ class UserRepository implements BaseRepository<User> {
       where: { id },
     });
     return user;
+  }
+
+  async getProfileSummaryById(id: string): Promise<UserProfileSummary | null> {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        bio: true,
+        role: true,
+        createdAt: true,
+        _count: {
+          select: {
+            posts: true,
+          },
+        },
+      },
+    });
+
+    return user ? { ...user, totalPosts: user?._count.posts ?? 0 } : null;
   }
 
   async getBy(filter: Partial<User>): Promise<User[]> {

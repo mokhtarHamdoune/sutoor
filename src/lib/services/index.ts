@@ -2,3 +2,4 @@
 export { PostService, postService } from "./post-service";
 export { CategoryService, categoryService } from "./category-service";
 export { TagsService, tagsService } from "./tags-service";
+export { default as ProfileService } from "./profile-service";

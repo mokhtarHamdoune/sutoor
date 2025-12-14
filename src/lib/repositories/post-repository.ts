@@ -2,21 +2,7 @@ import { prisma } from "@/db";
 import BaseRepository from "./base-repository";
 import { generateSlug } from "../utils";
 import { InputJsonValue as PrismaJsonValue } from "@prisma/client/runtime/client.js";
-import { JsonValue } from "../shared/types";
-
-// Full Post type with all DB fields
-export type Post = {
-  id: string;
-  title: string;
-  content: JsonValue; // Editor JSON content
-  slug: string;
-  authorId: string;
-  coverImage: string | null;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  publishedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { Post, JsonValue } from "../types/posts";
 
 export type PostPreview = Pick<
   Post,

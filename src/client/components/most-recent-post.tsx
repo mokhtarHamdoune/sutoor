@@ -3,9 +3,11 @@ import BabiesStufImg from "@/client/assets/images/babies-stuff.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/client/shared/ui/avatar";
 import { Bookmark, Clock, ArrowRight } from "lucide-react";
 import { Badge } from "@/client/shared/ui/badge";
+import Link from "next/link";
 
 type MostRecentPostProps = {
   id: string;
+  slug: string;
   imageUrl: string;
   title: string;
   summary: string;
@@ -23,6 +25,7 @@ const MostRecentPost = ({
   authorImage = "https://github.com/shadcn.png",
   publishedAt = "2 hours ago",
   category = "Featured",
+  slug,
 }: MostRecentPostProps) => {
   return (
     <article className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">
@@ -34,7 +37,7 @@ const MostRecentPost = ({
           alt={title}
           fill
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
       </div>
 
       {/* Content Overlay */}
@@ -88,10 +91,12 @@ const MostRecentPost = ({
             </div>
 
             {/* Read More Button */}
-            <button className="group/btn flex items-center gap-2 px-6 py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-all">
-              <span>Read More</span>
-              <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-            </button>
+            <Link href={`/posts/${slug}`}>
+              <button className="group/btn flex items-center gap-2 px-6 py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-all cursor-pointer">
+                <span>Read More</span>
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </button>
+            </Link>
           </div>
         </div>
       </div>

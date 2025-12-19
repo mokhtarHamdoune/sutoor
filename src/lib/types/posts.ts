@@ -20,3 +20,14 @@ export type Post = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type PostDetails = Post & {
+  author: {
+    id: string;
+    name: string | null;
+    image: string | null;
+    bio: string | null;
+  };
+  categories: { id: string; label: string; slug: string }[];
+  tags: { id: string; name: string }[];
+};

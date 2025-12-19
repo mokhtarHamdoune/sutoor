@@ -1,6 +1,6 @@
-import PostRepository, { Post } from "../repositories/post-repository";
+import PostRepository from "../repositories/post-repository";
 import UserRepository from "../repositories/user-repository";
-import { JsonValue } from "../shared/types";
+import { Post, JsonValue } from "../types/posts";
 
 export class PostService {
   constructor(
@@ -145,6 +145,13 @@ export class PostService {
     }
 
     return this.postRepo.delete(postId);
+  }
+
+  /**
+   * Get detailed post information by slug, including author, categories, and tags
+   */
+  async getDetailsBySlug(slug: string) {
+    return this.postRepo.getDetailsBySlug(slug);
   }
 }
 

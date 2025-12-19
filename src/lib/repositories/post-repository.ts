@@ -2,7 +2,10 @@ import { prisma } from "@/db";
 import BaseRepository from "./base-repository";
 import { generateSlug } from "../utils";
 import { InputJsonValue as PrismaJsonValue } from "@prisma/client/runtime/client.js";
-import { Post, JsonValue } from "../types/posts";
+import { Post, PostDetails, JsonValue } from "../types/posts";
+// TODO: implement post details service where we return the post along with the categor plus the tags ,
+// basiclay every thingb
+// TODO: maybe we shoud create a new method and keep the details or fitgure out a solution
 
 export type PostPreview = Pick<
   Post,
@@ -133,18 +136,13 @@ class PostRepository implements BaseRepository<Post> {
   async getBySlug(slug: string): Promise<Post | null> {
     const post = await prisma.post.findUnique({
       where: { slug },
-      include: {
-        categories: {
-          select: { id: true, label: true, slug: true },
-        },
-      },
     });
     if (!post) {
       return null;
     }
     return { ...post, content: post.content as JsonValue };
   }
-
+  // FIXME : I do not like this it looks bad
   async listAuthorPostPreviews(
     authorId: string,
     options?: {
@@ -202,6 +200,42 @@ class PostRepository implements BaseRepository<Post> {
           : {}),
       },
     });
+  }
+
+  /**
+   * Get post details by slug, including author and categories, tags and everything needed
+   */
+
+  async getDetailsBySlug(slug: string): Promise<PostDetails | null> {
+    const post = await prisma.post.findUnique({
+      where: { slug },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            bio: true,
+          },
+        },
+        categories: { select: { id: true, label: true, slug: true } },
+        tags: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    return {
+      ...post,
+      content: post.content as JsonValue,
+    };
   }
 }
 

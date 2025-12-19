@@ -7,7 +7,7 @@ export default async function Home() {
   const posts = await postService.getBy({});
 
   return (
-    <main className="w-11/12  max-w-7xl m-auto">
+    <main className="w-11/12 max-w-7xl m-auto p-8">
       {posts.length > 0 && (
         <MostRecentPost
           id={posts[0].id}
@@ -22,7 +22,7 @@ export default async function Home() {
           <li key={post.id} className="hover:text-blue-300">
             <Link href={`/posts/${post.slug}`}>
               <PostCard post={post} />
-            </Link>
+            </Link>{" "}
           </li>
         ))}
       </ul>

@@ -8,10 +8,12 @@ export default async function NewPostPage() {
   const categories = await categoryService.getAll();
 
   return (
-    <PostEditor
-      onSave={saveEditorContent}
-      cancelHref="/posts"
-      categories={categories.map((c) => ({ id: c.id, label: c.label }))}
-    />
+    <div className="bg-slate-200 p-8">
+      <PostEditor
+        onSave={saveEditorContent}
+        cancelHref="/posts"
+        categories={categories.map((c) => ({ id: c.id, label: c.label }))}
+      />
+    </div>
   );
 }

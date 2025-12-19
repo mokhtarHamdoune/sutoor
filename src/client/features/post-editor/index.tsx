@@ -81,9 +81,9 @@ export default function PostEditor({
   };
 
   return (
-    <div className="mt-8 min-h-dvh max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="min-h-dvh max-w-7xl mx-auto sm:px-6 bg-white">
       {/* Top Navigation Bar */}
-      <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
+      <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100 p-8">
         <div className="flex items-center gap-4">
           <Link href={cancelHref}>
             <Button variant="ghost" size="sm" disabled={isPending}>
@@ -107,7 +107,11 @@ export default function PostEditor({
               <Trash className="mr-2 h-4 w-4" /> Delete
             </Button>
           )}
-          <Button onClick={handleSave} disabled={isPending || !title.trim()}>
+          <Button
+            className="cursor-pointer"
+            onClick={handleSave}
+            disabled={isPending || !title.trim()}
+          >
             <Save className="mr-2 h-4 w-4" />
             {isPending ? "Saving..." : "Save changes"}
           </Button>

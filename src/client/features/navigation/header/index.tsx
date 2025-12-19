@@ -56,7 +56,7 @@ export async function Header() {
           {session?.user ? (
             <>
               <Button variant="ghost" asChild className="hidden md:flex">
-                <Link href="/post/new">Start Writing</Link>
+                <Link href="/posts/new">Start Writing</Link>
               </Button>
               <UserMenu user={session.user} />
             </>

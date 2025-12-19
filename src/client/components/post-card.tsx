@@ -36,19 +36,17 @@ export function PostCard({ post, author }: PostCardProps) {
 
   return (
     <Card className="rounded-xl p-3 shadow-none hover:shadow-lg transition-shadow gap-2">
-      <Link href={`/post/${post.slug}`}>
-        <CardHeader className="p-0">
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted">
-            <Image
-              className="object-cover"
-              src={post.coverImage || ferrari_img}
-              alt={post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </div>
-        </CardHeader>
-      </Link>
+      <CardHeader className="p-0">
+        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted">
+          <Image
+            className="object-cover"
+            src={post.coverImage || ferrari_img}
+            alt={post.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </div>
+      </CardHeader>
       <CardContent className="p-0 flex flex-col gap-2">
         <Link href={`/post/${post.slug}`}>
           <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">

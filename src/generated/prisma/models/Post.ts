@@ -28,6 +28,7 @@ export type PostMinAggregateOutputType = {
   id: string | null
   title: string | null
   slug: string | null
+  contentHtml: string | null
   coverImage: string | null
   status: $Enums.PostStatus | null
   publishedAt: Date | null
@@ -40,6 +41,7 @@ export type PostMaxAggregateOutputType = {
   id: string | null
   title: string | null
   slug: string | null
+  contentHtml: string | null
   coverImage: string | null
   status: $Enums.PostStatus | null
   publishedAt: Date | null
@@ -53,6 +55,7 @@ export type PostCountAggregateOutputType = {
   title: number
   slug: number
   content: number
+  contentHtml: number
   coverImage: number
   status: number
   publishedAt: number
@@ -67,6 +70,7 @@ export type PostMinAggregateInputType = {
   id?: true
   title?: true
   slug?: true
+  contentHtml?: true
   coverImage?: true
   status?: true
   publishedAt?: true
@@ -79,6 +83,7 @@ export type PostMaxAggregateInputType = {
   id?: true
   title?: true
   slug?: true
+  contentHtml?: true
   coverImage?: true
   status?: true
   publishedAt?: true
@@ -92,6 +97,7 @@ export type PostCountAggregateInputType = {
   title?: true
   slug?: true
   content?: true
+  contentHtml?: true
   coverImage?: true
   status?: true
   publishedAt?: true
@@ -178,6 +184,7 @@ export type PostGroupByOutputType = {
   title: string
   slug: string
   content: runtime.JsonValue
+  contentHtml: string
   coverImage: string | null
   status: $Enums.PostStatus
   publishedAt: Date | null
@@ -212,6 +219,7 @@ export type PostWhereInput = {
   title?: Prisma.StringFilter<"Post"> | string
   slug?: Prisma.StringFilter<"Post"> | string
   content?: Prisma.JsonFilter<"Post">
+  contentHtml?: Prisma.StringFilter<"Post"> | string
   coverImage?: Prisma.StringNullableFilter<"Post"> | string | null
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
@@ -230,6 +238,7 @@ export type PostOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHtml?: Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -251,6 +260,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PostWhereInput | Prisma.PostWhereInput[]
   title?: Prisma.StringFilter<"Post"> | string
   content?: Prisma.JsonFilter<"Post">
+  contentHtml?: Prisma.StringFilter<"Post"> | string
   coverImage?: Prisma.StringNullableFilter<"Post"> | string | null
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
@@ -269,6 +279,7 @@ export type PostOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHtml?: Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -288,6 +299,7 @@ export type PostScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Post"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Post"> | string
   content?: Prisma.JsonWithAggregatesFilter<"Post">
+  contentHtml?: Prisma.StringWithAggregatesFilter<"Post"> | string
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   status?: Prisma.EnumPostStatusWithAggregatesFilter<"Post"> | $Enums.PostStatus
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
@@ -301,6 +313,7 @@ export type PostCreateInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -318,6 +331,7 @@ export type PostUncheckedCreateInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -335,6 +349,7 @@ export type PostUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -352,6 +367,7 @@ export type PostUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -369,6 +385,7 @@ export type PostCreateManyInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -382,6 +399,7 @@ export type PostUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -394,6 +412,7 @@ export type PostUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -417,6 +436,7 @@ export type PostCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHtml?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -429,6 +449,7 @@ export type PostMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  contentHtml?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -441,6 +462,7 @@ export type PostMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  contentHtml?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -616,6 +638,7 @@ export type PostCreateWithoutAuthorInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -632,6 +655,7 @@ export type PostUncheckedCreateWithoutAuthorInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -677,6 +701,7 @@ export type PostScalarWhereInput = {
   title?: Prisma.StringFilter<"Post"> | string
   slug?: Prisma.StringFilter<"Post"> | string
   content?: Prisma.JsonFilter<"Post">
+  contentHtml?: Prisma.StringFilter<"Post"> | string
   coverImage?: Prisma.StringNullableFilter<"Post"> | string | null
   status?: Prisma.EnumPostStatusFilter<"Post"> | $Enums.PostStatus
   publishedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
@@ -690,6 +715,7 @@ export type PostCreateWithoutCategoriesInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -706,6 +732,7 @@ export type PostUncheckedCreateWithoutCategoriesInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -743,6 +770,7 @@ export type PostCreateWithoutTagsInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -759,6 +787,7 @@ export type PostUncheckedCreateWithoutTagsInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -796,6 +825,7 @@ export type PostCreateWithoutCommentInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -812,6 +842,7 @@ export type PostUncheckedCreateWithoutCommentInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -844,6 +875,7 @@ export type PostUpdateWithoutCommentInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -860,6 +892,7 @@ export type PostUncheckedUpdateWithoutCommentInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -876,6 +909,7 @@ export type PostCreateWithoutMediaInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -892,6 +926,7 @@ export type PostUncheckedCreateWithoutMediaInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -924,6 +959,7 @@ export type PostUpdateWithoutMediaInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -940,6 +976,7 @@ export type PostUncheckedUpdateWithoutMediaInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -956,6 +993,7 @@ export type PostCreateManyAuthorInput = {
   title: string
   slug: string
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: string
   coverImage?: string | null
   status?: $Enums.PostStatus
   publishedAt?: Date | string | null
@@ -968,6 +1006,7 @@ export type PostUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -984,6 +1023,7 @@ export type PostUncheckedUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1000,6 +1040,7 @@ export type PostUncheckedUpdateManyWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1012,6 +1053,7 @@ export type PostUpdateWithoutCategoriesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1028,6 +1070,7 @@ export type PostUncheckedUpdateWithoutCategoriesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1044,6 +1087,7 @@ export type PostUncheckedUpdateManyWithoutCategoriesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1057,6 +1101,7 @@ export type PostUpdateWithoutTagsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1073,6 +1118,7 @@ export type PostUncheckedUpdateWithoutTagsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1089,6 +1135,7 @@ export type PostUncheckedUpdateManyWithoutTagsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentHtml?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1160,6 +1207,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   title?: boolean
   slug?: boolean
   content?: boolean
+  contentHtml?: boolean
   coverImage?: boolean
   status?: boolean
   publishedAt?: boolean
@@ -1179,6 +1227,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   title?: boolean
   slug?: boolean
   content?: boolean
+  contentHtml?: boolean
   coverImage?: boolean
   status?: boolean
   publishedAt?: boolean
@@ -1193,6 +1242,7 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   title?: boolean
   slug?: boolean
   content?: boolean
+  contentHtml?: boolean
   coverImage?: boolean
   status?: boolean
   publishedAt?: boolean
@@ -1207,6 +1257,7 @@ export type PostSelectScalar = {
   title?: boolean
   slug?: boolean
   content?: boolean
+  contentHtml?: boolean
   coverImage?: boolean
   status?: boolean
   publishedAt?: boolean
@@ -1215,7 +1266,7 @@ export type PostSelectScalar = {
   authorId?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "content" | "coverImage" | "status" | "publishedAt" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "content" | "contentHtml" | "coverImage" | "status" | "publishedAt" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   categories?: boolean | Prisma.Post$categoriesArgs<ExtArgs>
@@ -1245,6 +1296,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     title: string
     slug: string
     content: runtime.JsonValue
+    contentHtml: string
     coverImage: string | null
     status: $Enums.PostStatus
     publishedAt: Date | null
@@ -1683,6 +1735,7 @@ export interface PostFieldRefs {
   readonly title: Prisma.FieldRef<"Post", 'String'>
   readonly slug: Prisma.FieldRef<"Post", 'String'>
   readonly content: Prisma.FieldRef<"Post", 'Json'>
+  readonly contentHtml: Prisma.FieldRef<"Post", 'String'>
   readonly coverImage: Prisma.FieldRef<"Post", 'String'>
   readonly status: Prisma.FieldRef<"Post", 'PostStatus'>
   readonly publishedAt: Prisma.FieldRef<"Post", 'DateTime'>

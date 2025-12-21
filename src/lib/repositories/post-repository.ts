@@ -30,6 +30,7 @@ class PostRepository implements BaseRepository<Post> {
       data: {
         title: input.title,
         content: input.content as PrismaJsonValue,
+        contentHtml: input.contentHtml,
         slug: generateSlug(input.title),
         authorId: input.authorId,
         status: input.status,
@@ -86,6 +87,11 @@ class PostRepository implements BaseRepository<Post> {
     // Handle content type conversion if present
     if (item.content !== undefined) {
       updateData.content = item.content as PrismaJsonValue;
+    }
+
+    // Derived HTML cache (treat as computed from content)
+    if (item.contentHtml !== undefined) {
+      updateData.contentHtml = item.contentHtml;
     }
 
     // If title is being updated, regenerate the slug

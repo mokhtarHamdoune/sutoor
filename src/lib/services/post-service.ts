@@ -14,10 +14,13 @@ export class PostService {
    */
   async createDraft(
     authorId: string,
-    title: string,
-    content: JsonValue,
-    categoryId?: string,
-    coverImage?: string
+    post: {
+      title: string;
+      content: JsonValue;
+      contentHtml: string
+      categoryId?: string;
+      coverImage?: string | null;
+    }
   ): Promise<Post> {
     // Verify user exists
     const user = await this.userRepo.getById(authorId);
@@ -27,13 +30,14 @@ export class PostService {
     }
 
     return this.postRepo.save({
-      title,
-      content,
+      title: post.title,
+      content: post.content,
+      contentHtml: post.contentHtml ?? "",
       authorId,
       status: "DRAFT",
       publishedAt: null,
-      coverImage: coverImage || null,
-      categoryId,
+      coverImage: post.coverImage ?? null,
+      categoryId: post.categoryId,
     });
   }
 
@@ -105,6 +109,7 @@ export class PostService {
     updates: {
       title?: string;
       content?: JsonValue;
+      contentHtml: string;
       categoryId?: string;
       coverImage?: string;
     }

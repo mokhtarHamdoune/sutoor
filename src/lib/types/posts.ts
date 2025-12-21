@@ -12,6 +12,7 @@ export type Post = {
   id: string;
   title: string;
   content: JsonValue; // Editor JSON content
+  contentHtml: string; // Derived HTML cache for fast rendering (can be empty)
   slug: string;
   authorId: string;
   coverImage: string | null;

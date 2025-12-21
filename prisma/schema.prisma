@@ -77,6 +77,7 @@ model Post {
     title       String
     slug        String     @unique
     content     Json
+    contentHtml String     @default("") @map("content_html") @db.Text
     coverImage  String?    @map("cover_image")
     status      PostStatus @default(DRAFT)
     publishedAt DateTime?  @map("published_at")

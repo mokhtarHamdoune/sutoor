@@ -24,6 +24,7 @@ export function PostDetail({ post, children, currentUserId }: PostDetailProps) {
             publishedAt={post.publishedAt}
             categories={post.categories}
             slug={post.slug}
+            coverImage={post.coverImage}
             isAuthor={isAuthor}
           />
 

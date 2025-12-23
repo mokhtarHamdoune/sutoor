@@ -15,6 +15,7 @@ import { auth } from "@/lib/auth";
 const saveEditorContent = async (
   title: string,
   content: string,
+  contentHtml: string,
   categoryId?: string,
   coverImage?: string
 ) => {
@@ -24,13 +25,13 @@ const saveEditorContent = async (
     throw new Error("You must be logged in to create a post");
   }
 
-  await postService.createDraft(
-    session.user.id,
+  await postService.createDraft(session.user.id, {
     title,
     content,
+    contentHtml,
     categoryId,
-    coverImage
-  );
+    coverImage,
+  });
   redirect("/");
 };
 
@@ -38,12 +39,14 @@ const updateDraftContent = async (
   post_id: string,
   title: string,
   content: string,
+  contentHtml: string,
   categoryId?: string,
   coverImage?: string
 ) => {
   await postService.updateDraft(post_id, {
     title,
     content,
+    contentHtml,
     categoryId,
     coverImage,
   });

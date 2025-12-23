@@ -1,4 +1,3 @@
-import Editor from "@/client/features/editor";
 import { PostDetail } from "@/client/features/post-detail";
 import { postService } from "@/lib/services";
 import { notFound } from "next/navigation";
@@ -15,8 +14,7 @@ async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
 
   return (
     <PostDetail post={post} currentUserId={session?.user?.id}>
-      {/* Temporary: Read-only editor until we implement HTML rendering */}
-      <Editor editable={false} initContent={String(post.content)} />
+      <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
     </PostDetail>
   );
 }

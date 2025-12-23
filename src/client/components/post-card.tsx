@@ -12,6 +12,7 @@ import ferrari_img from "@/client/assets/images/ferrari-f40.jpg";
 import { Avatar } from "@/client/shared/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Bookmark } from "lucide-react";
+// TODO: move the link from here and wrap the card with link
 
 interface PostCardProps {
   post: {
@@ -48,7 +49,7 @@ export function PostCard({ post, author }: PostCardProps) {
         </div>
       </CardHeader>
       <CardContent className="p-0 flex flex-col gap-2">
-        <Link href={`/post/${post.slug}`}>
+        <Link href={`/posts/${post.slug}`}>
           <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
             {post.title}
           </CardTitle>

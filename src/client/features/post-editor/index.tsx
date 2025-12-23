@@ -31,6 +31,7 @@ interface PostEditorProps {
   onSave: (
     title: string,
     content: string,
+    contentHtml: string,
     categoryId?: string,
     coverImage?: string
   ) => Promise<{ slug: string }>;
@@ -74,6 +75,7 @@ export default function PostEditor({
       await onSave(
         title,
         editorContent.current!.json,
+        editorContent.current!.html,
         categoryId,
         coverImage || undefined
       );

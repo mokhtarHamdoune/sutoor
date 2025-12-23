@@ -14,10 +14,10 @@ export function PostDetail({ post, children, currentUserId }: PostDetailProps) {
   const isAuthor = currentUserId === post.author.id;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* Content card */}
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 md:p-10 lg:p-12">
+    <div className="min-h-screen bg-white mt-20">
+      {/* Full-width hero header */}
+      <div className="bg-white">
+        <div className="max-w-4xl mx-auto">
           <PostHeader
             title={post.title}
             author={post.author}
@@ -27,13 +27,16 @@ export function PostDetail({ post, children, currentUserId }: PostDetailProps) {
             coverImage={post.coverImage}
             isAuthor={isAuthor}
           />
-
-          <div className="mt-8">
-            <PostContent>{children}</PostContent>
-          </div>
-
-          <PostFooter author={post.author} />
         </div>
+      </div>
+
+      {/* Narrower content for readability */}
+      <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="py-12">
+          <PostContent>{children}</PostContent>
+        </div>
+
+        <PostFooter author={post.author} />
       </div>
     </div>
   );

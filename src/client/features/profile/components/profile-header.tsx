@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatDistanceToNow } from "date-fns";
 import { UserProfileData } from "@/app/profile/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/client/shared/ui/avatar";
 import { Button } from "@/client/shared/ui/button";
 import { Card, CardHeader } from "@/client/shared/ui/card";
 import { Badge } from "@/client/shared/ui/badge";
 import { EditProfileDialog } from "./edit-profile-dialog";
+import { daysTillNow, getInitials } from "@/client/shared/lib/utils";
 
 interface ProfileHeaderProps {
   user: UserProfileData;
@@ -18,17 +18,6 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const router = useRouter();
-
-  const initials =
-    user.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase() || "U";
-
-  const joinedDate = formatDistanceToNow(new Date(user.createdAt), {
-    addSuffix: true,
-  });
 
   const handleEditSuccess = () => {
     setShowEditDialog(false);
@@ -45,7 +34,9 @@ export function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps) {
                 src={user.image || undefined}
                 alt={user.name || ""}
               />
-              <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+              <AvatarFallback className="text-2xl">
+                {getInitials(user.name)}
+              </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 space-y-3">
@@ -69,7 +60,7 @@ export function ProfileHeader({ user, isOwnProfile }: ProfileHeaderProps) {
               )}
 
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <span>Joined {joinedDate}</span>
+                <span>Joined {daysTillNow(user.createdAt)}</span>
                 <span>•</span>
                 <span>
                   {user.totalPosts} {user.totalPosts === 1 ? "post" : "posts"}

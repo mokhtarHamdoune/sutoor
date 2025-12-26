@@ -4,6 +4,7 @@ import { Button } from "@/client/shared/ui/button";
 import { Calendar, Edit } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { getInitials, formatDate } from "@/client/shared/lib/utils";
 
 interface PostHeaderProps {
   title: string;
@@ -28,25 +29,6 @@ export function PostHeader({
   coverImage,
   isAuthor = false,
 }: PostHeaderProps) {
-  const getInitials = (name: string | null) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const formatDate = (date: Date | null) => {
-    if (!date) return "Draft";
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(new Date(date));
-  };
-
   return (
     <header className="-mx-6 -mt-6 md:-mx-10 md:-mt-10 lg:-mx-12 lg:-mt-12 mb-8">
       {/* Hero Section with Cover Image */}

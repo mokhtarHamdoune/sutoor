@@ -1,5 +1,6 @@
 import { UserProfileData } from "@/app/profile/actions";
 import { Card, CardContent } from "@/client/shared/ui/card";
+import { formatDate } from "@/client/shared/lib/utils";
 
 interface AboutTabProps {
   user: UserProfileData;
@@ -19,13 +20,7 @@ export function AboutTab({ user, publishedPostsCount }: AboutTabProps) {
 
         <div>
           <h3 className="font-semibold mb-2">Member Since</h3>
-          <p className="text-muted-foreground">
-            {new Date(user.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
+          <p className="text-muted-foreground">{formatDate(user.createdAt)}</p>
         </div>
 
         <div>

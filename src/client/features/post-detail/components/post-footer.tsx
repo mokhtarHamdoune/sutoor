@@ -1,3 +1,4 @@
+import { getInitials } from "@/client/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/client/shared/ui/avatar";
 import Link from "next/link";
 
@@ -11,16 +12,6 @@ interface PostFooterProps {
 }
 
 export function PostFooter({ author }: PostFooterProps) {
-  const getInitials = (name: string | null) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <footer className="py-12 border-t border-slate-200">
       <div className="flex items-start gap-6">

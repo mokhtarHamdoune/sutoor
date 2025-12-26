@@ -15,6 +15,9 @@ export default async function Home() {
           title={posts[0].title}
           summary="This is summary of the latest blog we need somehow to generate summary of the blog"
           imageUrl={posts[0].coverImage || ""}
+          authorName={posts[0].author.name || "Unknown Author"}
+          authorImage={posts[0].author.image || undefined}
+          publishedAt={posts[0].publishedAt || undefined}
         />
       )}
       <ul className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">

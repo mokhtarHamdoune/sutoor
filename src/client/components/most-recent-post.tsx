@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/client/shared/ui/avatar";
 import { Bookmark, Clock, ArrowRight } from "lucide-react";
 import { Badge } from "@/client/shared/ui/badge";
 import Link from "next/link";
+import { daysTillNow } from "../shared/lib/utils";
 
 type MostRecentPostProps = {
   id: string;
@@ -13,7 +14,7 @@ type MostRecentPostProps = {
   summary: string;
   authorName?: string;
   authorImage?: string;
-  publishedAt?: string;
+  publishedAt?: Date;
   category?: string;
 };
 
@@ -23,7 +24,7 @@ const MostRecentPost = ({
   summary,
   authorName = "Shadcn",
   authorImage = "https://github.com/shadcn.png",
-  publishedAt = "2 hours ago",
+  publishedAt = new Date(),
   category = "Featured",
   slug,
 }: MostRecentPostProps) => {
@@ -84,7 +85,7 @@ const MostRecentPost = ({
                   </h3>
                   <div className="flex items-center gap-1.5 text-xs text-gray-300">
                     <Clock className="w-3 h-3" />
-                    <span>{publishedAt}</span>
+                    <span>{daysTillNow(publishedAt)}</span>
                   </div>
                 </div>
               </div>

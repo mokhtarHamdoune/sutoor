@@ -1,3 +1,10 @@
+import { Author } from "./authors";
+
+// Input type for creating a post - omits DB-generated fields
+export type CreatePostInput = Omit<
+  Post,
+  "id" | "slug" | "createdAt" | "updatedAt"
+>;
 // Domain JSON type - no Prisma dependencies
 export type JsonValue =
   | string
@@ -32,3 +39,16 @@ export type PostDetails = Post & {
   categories: { id: string; label: string; slug: string }[];
   tags: { id: string; name: string }[];
 };
+
+export type PostPreview = Pick<
+  Post,
+  | "id"
+  | "title"
+  | "slug"
+  | "coverImage"
+  | "publishedAt"
+  | "createdAt"
+  | "status"
+>;
+
+export type PostListItem = PostPreview & { author: Author };

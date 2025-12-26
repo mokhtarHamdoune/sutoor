@@ -1,6 +1,6 @@
 import PostRepository from "../repositories/post-repository";
 import UserRepository from "../repositories/user-repository";
-import { Post, JsonValue } from "../types/posts";
+import { Post, JsonValue, PostListItem } from "../types/posts";
 
 export class PostService {
   constructor(
@@ -17,7 +17,7 @@ export class PostService {
     post: {
       title: string;
       content: JsonValue;
-      contentHtml: string
+      contentHtml: string;
       categoryId?: string;
       coverImage?: string | null;
     }
@@ -46,7 +46,9 @@ export class PostService {
    *  Get Post list by filters
    * @returns
    */
-  async getBy(filters: Partial<Omit<Post, "content">>): Promise<Post[]> {
+  async getBy(
+    filters: Partial<Omit<Post, "content">>
+  ): Promise<PostListItem[]> {
     return this.postRepo.getBy(filters);
   }
 

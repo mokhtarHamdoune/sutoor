@@ -1,30 +1,19 @@
 import { prisma } from "@/db";
-import BaseRepository from "./base-repository";
 import { generateSlug } from "../utils";
 import { InputJsonValue as PrismaJsonValue } from "@prisma/client/runtime/client.js";
-import { Post, PostDetails, JsonValue } from "../types/posts";
+import {
+  Post,
+  PostDetails,
+  JsonValue,
+  PostListItem,
+  CreatePostInput,
+  PostPreview,
+} from "../types/posts";
 // TODO: implement post details service where we return the post along with the categor plus the tags ,
 // basiclay every thingb
 // TODO: maybe we shoud create a new method and keep the details or fitgure out a solution
 
-export type PostPreview = Pick<
-  Post,
-  | "id"
-  | "title"
-  | "slug"
-  | "coverImage"
-  | "publishedAt"
-  | "createdAt"
-  | "status"
->;
-
-// Input type for creating a post - omits DB-generated fields
-export type CreatePostInput = Omit<
-  Post,
-  "id" | "slug" | "createdAt" | "updatedAt"
->;
-
-class PostRepository implements BaseRepository<Post> {
+class PostRepository {
   async save(input: CreatePostInput & { categoryId?: string }): Promise<Post> {
     const post = await prisma.post.create({
       data: {
@@ -63,19 +52,29 @@ class PostRepository implements BaseRepository<Post> {
     return { ...post, content: post.content as JsonValue };
   }
 
-  async getBy(filter: Partial<Omit<Post, "content">>): Promise<Post[]> {
-    return await prisma.post
-      .findMany({
-        where: {
-          ...filter,
+  async getBy(filter: Partial<Omit<Post, "content">>): Promise<PostListItem[]> {
+    return await prisma.post.findMany({
+      where: {
+        ...filter,
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        coverImage: true,
+        publishedAt: true,
+        createdAt: true,
+        status: true,
+        updatedAt: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
         },
-      })
-      .then((posts) =>
-        posts.map((post) => ({
-          ...post,
-          content: post.content as JsonValue,
-        }))
-      );
+      },
+    });
   }
 
   async update(

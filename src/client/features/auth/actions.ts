@@ -5,14 +5,13 @@ import { signIn } from "@/lib/auth";
 export async function signInWithEmail(formData: FormData) {
   await signIn("nodemailer", {
     email: formData.get("email"),
-    redirectTo: "/",
   });
 }
 
 export async function signInWithGithub() {
-  await signIn("github", { redirectTo: "/" });
+  await signIn("github");
 }
 
 export async function signInWithGoogle() {
-  await signIn("google", { redirectTo: "/" });
+  await signIn("google");
 }

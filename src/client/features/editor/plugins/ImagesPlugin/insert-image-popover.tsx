@@ -9,6 +9,7 @@ import {
   TabsContent,
 } from "@/client/shared/ui/tabs";
 import { FolderOpen, CirclePlus, Link } from "lucide-react";
+import { uploadImage } from "@/app/actions/upload";
 
 interface InsertImagePopoverProps {
   position: { top: number; left: number };
@@ -22,6 +23,7 @@ const InsertImagePopover = ({
   onClose,
 }: InsertImagePopoverProps) => {
   const [url, setUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   // Handle click outside to close popover
@@ -67,19 +69,26 @@ const InsertImagePopover = ({
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          onInsert({
-            src: reader.result,
-            altText: file.name,
-          });
-        }
-      };
-      reader.readAsDataURL(file);
+      setUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const uploadedUrl = await uploadImage(formData);
+
+        onInsert({
+          src: uploadedUrl,
+          altText: file.name,
+        });
+      } catch (error) {
+        console.error("Image upload failed:", error);
+        alert("Failed to upload image. Please try again.");
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -115,15 +124,17 @@ const InsertImagePopover = ({
             accept="image/*"
             onChange={handleFileUpload}
             className="hidden"
+            disabled={uploading}
           />
           <Button
             size="sm"
             className="w-full cursor-pointer"
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
           >
             <CirclePlus />
-            Choose Image
+            {uploading ? "Uploading..." : "Choose Image"}
           </Button>
         </TabsContent>
         <TabsContent value="url">

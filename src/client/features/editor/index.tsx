@@ -20,7 +20,6 @@ import {
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
-import { ToolbarUIProvider } from "./contexts/toolbar-ui-context";
 import { CommandProvider } from "./contexts/command-context";
 import YouTubePlugin from "./plugins/YouTubePlugin";
 import OnChangePlugin, { type EditorContent } from "./plugins/OnChangePlugin";
@@ -50,14 +49,13 @@ export default function Editor({
 
   return (
     <CommandProvider>
-      <ToolbarUIProvider>
-        <LexicalComposer
-          initialConfig={{
-            ...editorConfig,
-            editable: editable,
-            editorState: initContent,
-          }}
-        >
+      <LexicalComposer
+        initialConfig={{
+          ...editorConfig,
+          editable: editable,
+          editorState: initContent,
+        }}
+      >
           <OnChangePlugin onChange={onChange} />
           <FloatingToolbarPlugin />
           <RichTextPlugin
@@ -82,7 +80,6 @@ export default function Editor({
           <AutoEmbedPlugin />
           <YouTubePlugin />
         </LexicalComposer>
-      </ToolbarUIProvider>
     </CommandProvider>
   );
 }

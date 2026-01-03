@@ -19,6 +19,8 @@ export const Toolbar: React.FC<{
 
 Toolbar.displayName = "Toolbar";
 
+//TODO: change the value of the toolcolorpicker to be no value ? maybe custom
+
 export const ToolRenderer: React.FC<{ tool: Tool }> = memo(({ tool }) => {
   switch (tool.type) {
     case "toggle":

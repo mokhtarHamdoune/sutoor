@@ -6,7 +6,6 @@ import {
   CardFooter,
 } from "@/client/shared/ui/card";
 import Image from "next/image";
-import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import ferrari_img from "@/client/assets/images/ferrari-f40.jpg";
 import { Avatar } from "@/client/shared/ui/avatar";
@@ -49,11 +48,9 @@ export function PostCard({ post, author }: PostCardProps) {
         </div>
       </CardHeader>
       <CardContent className="p-0 flex flex-col gap-2">
-        <Link href={`/posts/${post.slug}`}>
-          <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
-            {post.title}
-          </CardTitle>
-        </Link>
+        <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
+          {post.title}
+        </CardTitle>
       </CardContent>
       {author && (
         <CardFooter className="border border-slate-200 p-2 rounded-xl">

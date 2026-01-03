@@ -6,7 +6,6 @@ import {
 import { HexColorPicker } from "react-colorful";
 import { ValueTool } from "../../interfaces/tool";
 import { memo, useEffect, useState } from "react";
-import { useToolbarUI } from "../../hooks/useToolbarUI";
 
 type ToolColorPickerProps = {
   tool: ValueTool;
@@ -14,7 +13,6 @@ type ToolColorPickerProps = {
 
 const ToolColorPicker = ({ tool }: ToolColorPickerProps) => {
   const [color, setColor] = useState(tool.value || "#000000");
-  const toolbarUI = useToolbarUI();
 
   useEffect(() => {
     setColor(tool.value || "#000000");
@@ -27,10 +25,7 @@ const ToolColorPicker = ({ tool }: ToolColorPickerProps) => {
   };
 
   return (
-    <Popover
-      open={toolbarUI?.isOpen("color-picker")}
-      onOpenChange={(open) => toolbarUI?.setOpen("color-picker", open)}
-    >
+    <Popover>
       <PopoverTrigger asChild>
         <button
           className="w-6 h-6 rounded-full border-2 border-gray-300 hover:border-gray-400 transition-colors cursor-pointer"

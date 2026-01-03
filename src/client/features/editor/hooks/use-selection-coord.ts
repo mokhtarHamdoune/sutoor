@@ -17,13 +17,15 @@ type SelectionConfig = {
   countCollapseAsSelection: boolean;
 };
 
+export type Position = {
+  top: number;
+  left: number;
+};
+
 export const useSelectionCoord = (
   config: SelectionConfig = { countCollapseAsSelection: false }
 ) => {
-  const [coordinates, setCoordinates] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
+  const [coordinates, setCoordinates] = useState<Position | null>(null);
 
   const [editor] = useLexicalComposerContext();
 

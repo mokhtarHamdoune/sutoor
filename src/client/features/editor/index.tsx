@@ -15,6 +15,7 @@ import {
   LinkPlugin,
   CommandPlugin,
   AutoEmbedPlugin,
+  TablePlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -56,30 +57,31 @@ export default function Editor({
           editorState: initContent,
         }}
       >
-          <OnChangePlugin onChange={onChange} />
-          <FloatingToolbarPlugin />
-          <RichTextPlugin
-            contentEditable={
-              <div className="relative h-full" ref={onRef}>
-                <ContentEditable placeholder="Share your story, ideas, or updates — start writing here." />
-              </div>
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          {floatingAnchorElem && (
-            <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-          )}
-          <ListPlugin hasStrictIndent />
-          <LinkPlugin hasLinkAttributes={true} />
-          <FloatingLink />
-          <AutoFocusPlugin />
-          <CodeHighlightPlugin />
-          <CodeBlockActionsPlugin />
-          <ImagesPlugin />
-          <CommandPlugin />
-          <AutoEmbedPlugin />
-          <YouTubePlugin />
-        </LexicalComposer>
+        <OnChangePlugin onChange={onChange} />
+        <FloatingToolbarPlugin />
+        <RichTextPlugin
+          contentEditable={
+            <div className="relative h-full" ref={onRef}>
+              <ContentEditable placeholder="Share your story, ideas, or updates — start writing here." />
+            </div>
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        {floatingAnchorElem && (
+          <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+        )}
+        <ListPlugin hasStrictIndent />
+        <LinkPlugin hasLinkAttributes={true} />
+        <FloatingLink />
+        <AutoFocusPlugin />
+        <CodeHighlightPlugin />
+        <CodeBlockActionsPlugin />
+        <ImagesPlugin />
+        <CommandPlugin />
+        <AutoEmbedPlugin />
+        <YouTubePlugin />
+        <TablePlugin />
+      </LexicalComposer>
     </CommandProvider>
   );
 }

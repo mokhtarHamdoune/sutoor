@@ -10,3 +10,4 @@ export * from "./CommandPlugin";
 export * from "./AutoEmbedPlugin";
 export * from "./YouTubePlugin";
 export * from "./OnChangePlugin";
+export * from "./TablePlugin";

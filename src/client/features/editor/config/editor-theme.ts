@@ -69,4 +69,8 @@ export const editorTheme: EditorThemeClasses = {
     url: "editor-token-operator",
     variable: "editor-token-variable",
   },
+  table: "editor-table",
+  tableCell: "editor-table-cell",
+  tableCellHeader: "editor-table-cell-header",
+  tableRow: "editor-table-row",
 };

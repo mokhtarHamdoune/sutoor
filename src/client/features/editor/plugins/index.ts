@@ -11,3 +11,4 @@ export * from "./AutoEmbedPlugin";
 export * from "./YouTubePlugin";
 export * from "./OnChangePlugin";
 export * from "./TablePlugin";
+export * from "./TableHoverActionsPlugin";

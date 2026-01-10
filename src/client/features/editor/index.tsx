@@ -16,6 +16,7 @@ import {
   CommandPlugin,
   AutoEmbedPlugin,
   TablePlugin,
+  TableHoverActionsPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -81,6 +82,7 @@ export default function Editor({
         <AutoEmbedPlugin />
         <YouTubePlugin />
         <TablePlugin />
+        <TableHoverActionsPlugin anchorElem={floatingAnchorElem || undefined} />
       </LexicalComposer>
     </CommandProvider>
   );

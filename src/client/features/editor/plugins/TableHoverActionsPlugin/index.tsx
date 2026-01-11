@@ -32,8 +32,20 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { getThemeSelector } from "../../utils/getThemeSelector";
-import { Plus } from "lucide-react";
-import { Button } from "@/client/shared/ui/button";
+import {
+  Ellipsis,
+  MoveDown,
+  MoveLeft,
+  MoveRight,
+  MoveUp,
+  Trash2,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/client/shared/ui/dropdown-menu";
 
 const INDICATOR_SIZE_PX = 18;
 const SIDE_INDICATOR_SIZE_PX = 18;
@@ -285,7 +297,7 @@ function TableHoverActionsV2({
     return null;
   }
 
-  const handleAddColumn = () => {
+  const handleAddColumn = (insertAfter?: boolean) => {
     const targetCell = hoveredTopCellRef.current;
     if (!targetCell) {
       return;
@@ -294,12 +306,12 @@ function TableHoverActionsV2({
       const maybeCellNode = $getNearestNodeFromDOMNode(targetCell);
       if ($isTableCellNode(maybeCellNode)) {
         maybeCellNode.selectEnd();
-        $insertTableColumnAtSelection();
+        $insertTableColumnAtSelection(insertAfter);
       }
     });
   };
 
-  const handleAddRow = () => {
+  const handleAddRow = (insertAfter?: boolean) => {
     const targetCell = hoveredLeftCellRef.current;
     if (!targetCell) {
       return;
@@ -308,14 +320,14 @@ function TableHoverActionsV2({
       const maybeCellNode = $getNearestNodeFromDOMNode(targetCell);
       if ($isTableCellNode(maybeCellNode)) {
         maybeCellNode.selectEnd();
-        $insertTableRowAtSelection();
+        $insertTableRowAtSelection(insertAfter);
       }
     });
   };
 
   return (
     <>
-      <Button
+      <div
         ref={(node) => {
           floatingElemRef.current = node;
           refs.setFloating(node);
@@ -324,16 +336,26 @@ function TableHoverActionsV2({
           ...floatingStyles,
           opacity: isVisible ? 1 : 0,
         }}
-        aria-label="Add column"
-        type="button"
-        size={"icon-sm"}
-        variant={"secondary"}
-        className="floating-top-actions border border-slate-300 size-5 text-slate-500 cursor-pointer"
-        onClick={handleAddColumn}
+        className="floating-top-actions"
       >
-        <Plus size={16} />
-      </Button>
-      <Button
+        <DropdownMenu>
+          <DropdownMenuTrigger className="bg-white cursor-pointer text-gray-400 px-1 border border-gray-400 rounded-sm">
+            <Ellipsis size={14} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={handleAddColumn.bind(null, false)}>
+              <MoveLeft /> Insert Left
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleAddColumn.bind(null, true)}>
+              <MoveRight /> Insert Right
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Trash2 className="text-red-400" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div
         ref={(node) => {
           leftFloatingElemRef.current = node;
           leftRefs.setFloating(node);
@@ -342,15 +364,26 @@ function TableHoverActionsV2({
           ...leftFloatingStyles,
           opacity: isLeftVisible ? 1 : 0,
         }}
-        aria-label="Add row"
-        type="button"
-        size={"icon-sm"}
-        variant={"secondary"}
-        className="floating-top-actions border border-slate-300 size-5 text-slate-500 cursor-pointer"
-        onClick={handleAddRow}
+        className="floating-top-actions"
       >
-        <Plus size={16} />
-      </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="bg-white cursor-pointer text-gray-400  py-1 border border-gray-400 rounded-sm">
+            <Ellipsis size={14} className="rotate-90" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={handleAddRow.bind(null, false)}>
+              <MoveUp /> Insert Above
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleAddRow.bind(null, true)}>
+              <MoveDown /> Insert Below
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Trash2 className="text-red-400" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </>
   );
 }

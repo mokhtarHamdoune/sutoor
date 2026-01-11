@@ -22,6 +22,8 @@ import {
   $insertTableColumnAtSelection,
   $insertTableRowAtSelection,
   $isTableCellNode,
+  $deleteTableColumnAtSelection,
+  $deleteTableRowAtSelection,
 } from "@lexical/table";
 import {
   $getNearestNodeFromDOMNode,
@@ -325,6 +327,34 @@ function TableHoverActionsV2({
     });
   };
 
+  const handleDeleteColumn = () => {
+    const targetCell = hoveredTopCellRef.current;
+    if (!targetCell) {
+      return;
+    }
+    editor.update(() => {
+      const maybeCellNode = $getNearestNodeFromDOMNode(targetCell);
+      if ($isTableCellNode(maybeCellNode)) {
+        maybeCellNode.selectEnd();
+        $deleteTableColumnAtSelection();
+      }
+    });
+  };
+
+  const handleDeleteRow = () => {
+    const targetCell = hoveredLeftCellRef.current;
+    if (!targetCell) {
+      return;
+    }
+    editor.update(() => {
+      const maybeCellNode = $getNearestNodeFromDOMNode(targetCell);
+      if ($isTableCellNode(maybeCellNode)) {
+        maybeCellNode.selectEnd();
+        $deleteTableRowAtSelection();
+      }
+    });
+  };
+
   return (
     <>
       <div
@@ -349,7 +379,7 @@ function TableHoverActionsV2({
             <DropdownMenuItem onClick={handleAddColumn.bind(null, true)}>
               <MoveRight /> Insert Right
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDeleteColumn}>
               <Trash2 className="text-red-400" /> Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -377,7 +407,7 @@ function TableHoverActionsV2({
             <DropdownMenuItem onClick={handleAddRow.bind(null, true)}>
               <MoveDown /> Insert Below
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDeleteRow}>
               <Trash2 className="text-red-400" />
               Delete
             </DropdownMenuItem>

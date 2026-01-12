@@ -17,6 +17,7 @@ import {
   AutoEmbedPlugin,
   TablePlugin,
   TableHoverActionsPlugin,
+  TableCellResizerPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -83,6 +84,7 @@ export default function Editor({
         <YouTubePlugin />
         <TablePlugin />
         <TableHoverActionsPlugin anchorElem={floatingAnchorElem || undefined} />
+        <TableCellResizerPlugin />
       </LexicalComposer>
     </CommandProvider>
   );

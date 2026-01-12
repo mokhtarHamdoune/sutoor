@@ -27,9 +27,11 @@ const ToolButton: React.FC<{
     <Toggle
       type="button"
       title={tool.label}
+      disabled={tool.disabled}
       onClick={() => tool.execute()}
       aria-pressed={tool.type === "toggle" ? active : undefined}
-      className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      size="sm"
+      className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
     >
       {tool.icon ?? tool.label}
     </Toggle>

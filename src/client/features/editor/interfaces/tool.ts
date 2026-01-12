@@ -12,6 +12,7 @@ export interface BaseTool {
   type: ToolType;
   label?: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 export interface ToggleTool extends BaseTool {

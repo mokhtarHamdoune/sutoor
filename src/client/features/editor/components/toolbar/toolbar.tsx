@@ -9,7 +9,7 @@ export const Toolbar: React.FC<{
   tools: Tool[];
 }> = memo(({ tools }) => {
   return (
-    <div className="flex items-center gap-1 p-2 bg-white rounded shadow">
+    <div className="flex items-center gap-1 p-2 bg-white rounded">
       {tools.map((t) => (
         <ToolRenderer key={t.id} tool={t} />
       ))}

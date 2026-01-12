@@ -2,6 +2,7 @@
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { editorConfig } from "./config/editor-config";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ContentEditable from "./components/content-editable";
 import {
@@ -18,13 +19,14 @@ import {
   TablePlugin,
   TableHoverActionsPlugin,
   TableCellResizerPlugin,
+  YouTubePlugin,
+  ToolbarPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { useState } from "react";
 import "./config/editor-theme.css";
 import { CommandProvider } from "./contexts/command-context";
-import YouTubePlugin from "./plugins/YouTubePlugin";
 import OnChangePlugin, { type EditorContent } from "./plugins/OnChangePlugin";
 import type { EditorState } from "lexical";
 
@@ -59,6 +61,7 @@ export default function Editor({
           editorState: initContent,
         }}
       >
+        <ToolbarPlugin />
         <OnChangePlugin onChange={onChange} />
         <FloatingToolbarPlugin />
         <RichTextPlugin
@@ -85,6 +88,7 @@ export default function Editor({
         <TablePlugin />
         <TableHoverActionsPlugin anchorElem={floatingAnchorElem || undefined} />
         <TableCellResizerPlugin />
+        <HistoryPlugin />
       </LexicalComposer>
     </CommandProvider>
   );

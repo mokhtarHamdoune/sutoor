@@ -1,67 +1,42 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { Undo, Redo } from "lucide-react";
-import { useEffect, useState } from "react";
-import {
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
-  COMMAND_PRIORITY_CRITICAL,
-  REDO_COMMAND,
-  UNDO_COMMAND,
-} from "lexical";
+import { useMemo } from "react";
 import Toolbar from "../components/toolbar/toolbar";
 import { Tool } from "../interfaces/tool";
-import { mergeRegister } from "@lexical/utils";
+import {
+  useHistoryState,
+  createUndoTool,
+  createRedoTool,
+} from "../tools/history-tools";
+import { createBlockTypeTool } from "../tools/block-type-tools";
+import { createFormattingToolGroup } from "../tools/formatting-tools";
+import { createAlignmentToolGroup } from "../tools/alignment-tools";
+import { createListToolGroup } from "../tools/list-tools";
+import { createColorPickerTool } from "../tools/color-picker-tool";
+import { useSelectionState } from "../hooks/use-selection-state";
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
-  const [canUndo, setCanUndo] = useState(false);
-  const [canRedo, setCanRedo] = useState(false);
+  const historyState = useHistoryState();
+  const selectionState = useSelectionState();
 
-  useEffect(() => {
-    return mergeRegister(
-      editor.registerCommand(
-        CAN_UNDO_COMMAND,
-        (payload) => {
-          setCanUndo(payload);
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL
-      ),
-      editor.registerCommand(
-        CAN_REDO_COMMAND,
-        (payload) => {
-          setCanRedo(payload);
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL
-      )
-    );
-  }, [editor]);
-
-  const tools: Tool[] = [
-    {
-      id: "undo",
-      type: "toggle",
-      label: "Undo",
-      icon: <Undo size={18} />,
-      execute: () => {
-        editor.dispatchCommand(UNDO_COMMAND, undefined);
-      },
-      isActive: false,
-      disabled: !canUndo,
-    },
-    {
-      id: "redo",
-      type: "toggle",
-      label: "Redo",
-      icon: <Redo size={18} />,
-      execute: () => {
-        editor.dispatchCommand(REDO_COMMAND, undefined);
-      },
-      isActive: false,
-      disabled: !canRedo,
-    },
-  ];
+  const tools: Tool[] = useMemo(
+    () => [
+      // History tools (undo/redo)
+      createUndoTool({ editor, historyState }),
+      createRedoTool({ editor, historyState }),
+      // Block type (paragraph, headings, code block, quote)
+      createBlockTypeTool({ editor, selectionState }),
+      // Formatting tools (bold, italic, underline, strikethrough, code)
+      createFormattingToolGroup({ editor, selectionState }),
+      // Alignment tools (left, center, right, justify)
+      createAlignmentToolGroup({ editor, selectionState }),
+      // List tools (bullet, numbered)
+      createListToolGroup({ editor, selectionState }),
+      // Color picker
+      createColorPickerTool({ editor, selectionState }),
+    ],
+    [editor, historyState, selectionState]
+  );
 
   return (
     <div className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">

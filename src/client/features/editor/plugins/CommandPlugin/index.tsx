@@ -1,5 +1,10 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $createTextNode, $getSelection, $isRangeSelection, LexicalNode } from "lexical";
+import {
+  $createTextNode,
+  $getSelection,
+  $isRangeSelection,
+  LexicalNode,
+} from "lexical";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CommandPanel from "./command-panel";
 import { useCommandRegistry } from "../../hooks";
@@ -35,7 +40,7 @@ export const CommandPlugin = () => {
   const shouldShowPanel = useMemo(
     () => (text: string) =>
       SLASH_AT_START.test(text) || SLASH_AFTER_SPACE.test(text),
-    []
+    [],
   );
 
   /**
@@ -54,7 +59,7 @@ export const CommandPlugin = () => {
         });
       }
     },
-    [editor]
+    [editor],
   );
 
   useEffect(() => {
@@ -91,6 +96,13 @@ export const CommandPlugin = () => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
         const anchorNode = selection.anchor.getNode();
+
+        // Check if the node is still in the document and has a valid parent
+        const parent = anchorNode.getParent();
+        if (!parent) {
+          return; // Node was removed or is at root level, skip cleanup
+        }
+
         const text = anchorNode.getTextContent();
 
         let newText = text;
@@ -109,9 +121,11 @@ export const CommandPlugin = () => {
           newText = text.substring(1);
         }
 
-        // Replace the text node with the cleaned version
-        const newTextNode = $createTextNode(newText);
-        anchorNode.replace(newTextNode);
+        // Only replace if text actually changed and we have valid text
+        if (newText !== text) {
+          const newTextNode = $createTextNode(newText);
+          anchorNode.replace(newTextNode);
+        }
       }
     });
   }, [editor]);

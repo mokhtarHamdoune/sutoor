@@ -20,6 +20,7 @@ import {
   TableHoverActionsPlugin,
   TableCellResizerPlugin,
   YouTubePlugin,
+  DividerPlugin,
   ToolbarPlugin,
 } from "./plugins";
 // TODO : move this to the plugin do not import directly from lexical package
@@ -85,6 +86,7 @@ export default function Editor({
         <CommandPlugin />
         <AutoEmbedPlugin />
         <YouTubePlugin />
+        <DividerPlugin />
         <TablePlugin />
         <TableHoverActionsPlugin anchorElem={floatingAnchorElem || undefined} />
         <TableCellResizerPlugin />

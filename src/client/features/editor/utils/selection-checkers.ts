@@ -122,7 +122,6 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
   const firstNode = nodes[0];
   const elementNode = firstNode.getTopLevelElement();
   if ($isHeadingNode(elementNode)) {
-    console.log("Heading tag:", elementNode.getTag());
     return { type: "heading", tag: elementNode.getTag() as TextLevel };
   } else if ($isListNode(elementNode)) {
     const listType = elementNode.getListType();
@@ -132,7 +131,6 @@ const getElement = (selection: RangeSelection): EditorElement | null => {
   } else if ($isCodeNode(elementNode)) {
     return { type: "code" };
   } else if ($isQuoteNode(elementNode)) {
-    console.log("this is a quote");
     return { type: "quote" };
   } else {
     return { type: "paragraph" };
@@ -188,7 +186,7 @@ export const getLinkUrl = (selection: RangeSelection): string | null => {
  * @returns SelectionState object containing all formatting information
  */
 export function handleSelectionUpdate(
-  selection: BaseSelection
+  selection: BaseSelection,
 ): SelectionState {
   if ($isRangeSelection(selection)) {
     const format = getTextFormat(selection);

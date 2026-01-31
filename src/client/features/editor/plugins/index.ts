@@ -13,4 +13,5 @@ export * from "./OnChangePlugin";
 export * from "./TablePlugin";
 export * from "./TableHoverActionsPlugin";
 export * from "./TableCellResizer";
+export * from "./dividerPlugin";
 export { default as ToolbarPlugin } from "./toolbar-plugin";

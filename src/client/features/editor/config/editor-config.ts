@@ -5,7 +5,7 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
-import { ImageNode, YouTubeNode } from "../nodes";
+import { ImageNode, YouTubeNode, HorizontalRuleNode } from "../nodes";
 export const editorConfig: InitialConfigType = {
   namespace: "sutoor-editor",
   theme: editorTheme,
@@ -15,6 +15,7 @@ export const editorConfig: InitialConfigType = {
     CodeNode,
     CodeHighlightNode,
     HeadingNode,
+    HorizontalRuleNode,
     ImageNode,
     ListNode,
     ListItemNode,

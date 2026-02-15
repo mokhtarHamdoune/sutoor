@@ -7,7 +7,7 @@ export type Tag = TagModel;
 
 class TagsRepository implements BaseRepository<Tag> {
   async save(
-    input: Omit<Tag, "id" | "slug" | "createdAt" | "updatedAt">
+    input: Omit<Tag, "id" | "slug" | "createdAt" | "updatedAt">,
   ): Promise<Tag> {
     const tag = await prisma.tag.create({
       data: {

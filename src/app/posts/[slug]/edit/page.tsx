@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 async function EditPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const [post, categories] = await Promise.all([
-    postService.getBySlug(slug),
+    postService.getDetailsBySlug(slug),
     categoryService.getAll(),
   ]);
 

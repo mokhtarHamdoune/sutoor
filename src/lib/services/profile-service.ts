@@ -1,9 +1,8 @@
-import PostRepository, {
-  type PostPreview,
-} from "../repositories/post-repository";
+import { type PostPreview } from "@/lib/types/posts";
+import PostRepository from "@/lib/repositories/post-repository";
 import UserRepository, {
   type UserProfileSummary,
-} from "../repositories/user-repository";
+} from "@/lib/repositories/user-repository";
 
 export type ProfileView = UserProfileSummary & {
   postsPreview: PostPreview[];
@@ -13,14 +12,14 @@ export type ProfileView = UserProfileSummary & {
 class ProfileService {
   constructor(
     private userRepo = new UserRepository(),
-    private postRepo = new PostRepository()
+    private postRepo = new PostRepository(),
   ) {}
 
   async getProfileView(
     userId: string,
     options?: {
       previewLimit?: number;
-    }
+    },
   ): Promise<ProfileView | null> {
     const previewLimit = options?.previewLimit ?? 12;
 

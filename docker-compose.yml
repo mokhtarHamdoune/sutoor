@@ -43,13 +43,25 @@ services:
       EMAIL_SERVER_USER: ${EMAIL_SERVER_USER}
       EMAIL_SERVER_PASSWORD: ${EMAIL_SERVER_PASSWORD}
       EMAIL_FROM: ${EMAIL_FROM}
-    ports:
-      - "3000:3000"
     volumes:
       - uploads:/app/public/uploads
     depends_on:
       db:
         condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    container_name: sutoor-nginx-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/ssl/harfbase.com.pem:/etc/ssl/harfbase.com.pem:ro
+      - /etc/ssl/harfbase.com.key:/etc/ssl/harfbase.com.key:ro
+    depends_on:
+      - app
 
 volumes:
   postgres_data_prod:

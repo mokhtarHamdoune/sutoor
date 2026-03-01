@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/sutoor
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/harfbase
 
 jobs:
   build-and-push:

@@ -82,7 +82,7 @@ export default function LoginForm() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight">
-              Sign in to Sutoor
+              Sign in to Harfbase
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Pick up where you left off

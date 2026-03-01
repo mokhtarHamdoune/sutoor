@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sutoor",
+  title: "Harfbase",
   description: "Application for expressing your mind",
 };
 

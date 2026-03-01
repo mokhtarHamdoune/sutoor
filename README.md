@@ -1,6 +1,6 @@
-# Sutoor
+# Harfbase
 
-Sutoor is a lightweight web application for writing and publishing personal blogs and long-form content. The project focuses on building a modern text editor and an opinionated feature set for composing, formatting, and publishing posts with a pleasant UX.
+Harfbase is a lightweight web application for writing and publishing personal blogs and long-form content. The project focuses on building a modern text editor and an opinionated feature set for composing, formatting, and publishing posts with a pleasant UX.
 
 ## Purpose
 

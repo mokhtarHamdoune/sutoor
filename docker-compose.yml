@@ -1,12 +1,12 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: sutoor-db-prod
+    container_name: harfbase-db-prod
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-sutoor}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sutoor_password}
-      POSTGRES_DB: ${POSTGRES_DB:-sutoor_db}
+      POSTGRES_USER: ${POSTGRES_USER:-harfbase}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-harfbase_password}
+      POSTGRES_DB: ${POSTGRES_DB:-harfbase_db}
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
     ports:
@@ -15,19 +15,19 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-sutoor} -d ${POSTGRES_DB:-sutoor_db}",
+          "pg_isready -U ${POSTGRES_USER:-harfbase} -d ${POSTGRES_DB:-harfbase_db}",
         ]
       interval: 10s
       timeout: 5s
       retries: 5
 
   app:
-    image: ${DOCKERHUB_USERNAME}/sutoor:latest
-    container_name: sutoor-app-prod
+    image: ${DOCKERHUB_USERNAME}/harfbase:latest
+    container_name: harfbase-app-prod
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-sutoor}:${POSTGRES_PASSWORD:-sutoor_password}@db:5432/${POSTGRES_DB:-sutoor_db}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-harfbase}:${POSTGRES_PASSWORD:-harfbase_password}@db:5432/${POSTGRES_DB:-harfbase_db}
       # NextAuth
       AUTH_SECRET: ${AUTH_SECRET}
       NEXTAUTH_URL: ${AUTH_URL}
@@ -51,7 +51,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: sutoor-nginx-prod
+    container_name: harfbase-nginx-prod
     restart: unless-stopped
     ports:
       - "80:80"

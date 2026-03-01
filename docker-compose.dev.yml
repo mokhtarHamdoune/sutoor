@@ -2,18 +2,22 @@ services:
   # PostgreSQL Database - for local development
   db:
     image: postgres:16-alpine
-    container_name: sutoor-db-dev
+    container_name: harfbase-db-dev
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-sutoor}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sutoor_password}
-      POSTGRES_DB: ${POSTGRES_DB:-sutoor_db}
+      POSTGRES_USER: ${POSTGRES_USER:-harfbase}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-harfbase_password}
+      POSTGRES_DB: ${POSTGRES_DB:-harfbase_db}
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sutoor} -d ${POSTGRES_DB:-sutoor_db}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-harfbase} -d ${POSTGRES_DB:-harfbase_db}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,11 +26,11 @@ services:
   app:
     build:
       context: .
-    container_name: sutoor-app-dev
+    container_name: harfbase-app-dev
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      DATABASE_URL: postgresql://${POSTGRES_USER:-sutoor}:${POSTGRES_PASSWORD:-sutoor_password}@db:5432/${POSTGRES_DB:-sutoor_db}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-harfbase}:${POSTGRES_PASSWORD:-harfbase_password}@db:5432/${POSTGRES_DB:-harfbase_db}
       # NextAuth
       AUTH_SECRET: ${AUTH_SECRET}
       NEXTAUTH_URL: ${AUTH_URL}

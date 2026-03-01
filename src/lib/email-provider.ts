@@ -17,5 +17,5 @@ export const nodemailerConfig: Partial<NodemailerConfig> = {
       pass: process.env.EMAIL_SERVER_PASSWORD || "",
     },
   },
-  from: process.env.EMAIL_FROM || "noreply@sutoor.app",
+  from: process.env.EMAIL_FROM || "noreply@harfbase.com",
 };

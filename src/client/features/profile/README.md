@@ -1,6 +1,6 @@
 # Profile Feature
 
-This feature provides user profile pages with viewing and editing capabilities for the Sutoor blog platform.
+This feature provides user profile pages with viewing and editing capabilities for the Harfbase blog platform.
 
 ## 📁 Structure
 

@@ -1,6 +1,6 @@
-# Copilot Instructions for Sutoor
+# Copilot Instructions for Harfbase
 
-This guide helps AI coding agents work productively in the Sutoor codebase. It summarizes architecture, workflows, and conventions unique to this project.
+This guide helps AI coding agents work productively in the Harfbase codebase. It summarizes architecture, workflows, and conventions unique to this project.
 
 ## Architecture Overview
 

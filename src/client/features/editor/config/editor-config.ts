@@ -7,7 +7,7 @@ import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { ImageNode, YouTubeNode, HorizontalRuleNode } from "../nodes";
 export const editorConfig: InitialConfigType = {
-  namespace: "sutoor-editor",
+  namespace: "harfbase-editor",
   theme: editorTheme,
   onError: (error) => console.log(error),
   nodes: [
